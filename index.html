@@ -201,6 +201,41 @@ section.box.popopen > .pbody{display:block;padding:10px 14px 16px}
 select{width:100%;font:inherit;font-size:.92rem;border:1px solid var(--line);border-radius:6px;background:var(--field);color:var(--ink);padding:7px 8px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 #scaleHint.err{color:var(--mark)}
+/* ---------- ระบบลงทะเบียน ---------- */
+#authGate{position:fixed;inset:0;z-index:2000;background:var(--bg);overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px 24px}
+#authGate[hidden],#authModal[hidden]{display:none}
+.authCard{width:100%;max-width:440px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px 20px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.authCard h2{margin:0 0 2px;font-size:1.15rem}
+.authCard .sub{margin:0 0 14px;color:var(--muted);font-size:.85rem}
+.authTabs{display:flex;gap:0;margin:0 0 14px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.authTabs button{flex:1;border:0;border-radius:0;background:var(--field);padding:8px}
+.authTabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.authCard label{display:block;font-size:.85rem;color:var(--muted);margin:8px 0 3px}
+.authCard input{width:100%;font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:6px;padding:8px 10px;box-sizing:border-box}
+.authCard .row2a{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.authCard button.primary{width:100%;margin-top:16px;padding:10px}
+.authMsg{margin:12px 0 0;font-size:.88rem;min-height:1.2em}
+.authMsg.err{color:var(--mark)} .authMsg.ok{color:var(--accent)}
+.authFoot{margin:14px 0 0;color:var(--muted);font-size:.78rem;text-align:center}
+#authChip{position:relative;font-size:.82rem}
+#authChip>summary{list-style:none;cursor:pointer;border:1px solid var(--line);border-radius:999px;padding:2px 10px;background:var(--field);white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+#authChip>summary::-webkit-details-marker{display:none}
+#authChip .menu{position:absolute;right:0;top:calc(100% + 4px);z-index:96;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px;min-width:190px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:4px}
+#authChip .menu .who{font-size:.78rem;color:var(--muted);padding:2px 6px 6px;border-bottom:1px solid var(--line);white-space:normal}
+#authChip .menu button{text-align:left}
+#authChip .badge{display:inline-block;min-width:1.3em;padding:0 5px;margin-left:4px;border-radius:999px;background:var(--mark);color:#fff;font-size:.72rem;text-align:center}
+#authModal{position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.35);overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:4vh 12px}
+#authModal .authCard{max-width:980px}
+#authModal .x{float:right;margin:-6px -6px 0 0}
+.admTbl{width:100%;border-collapse:collapse;font-size:.82rem}
+.admTbl th,.admTbl td{text-align:left;white-space:normal;vertical-align:top;padding:5px 6px}
+.admTbl select{font:inherit;font-size:.82rem;padding:2px 4px;background:var(--field);color:var(--ink);border:1px solid var(--line);border-radius:5px}
+.admTbl button{padding:3px 8px;font-size:.78rem}
+.admTbl tr.pend td{background:rgba(200,50,43,.06)}
+.admScroll{overflow-x:auto;margin:6px 0 14px}
+.admSec{margin:16px 0 4px;font-size:.95rem}
+#authChip .badge[hidden]{display:none}
+.authCard .admTbl label.filebtn{display:inline-block;margin:0;color:var(--accent-ink);font-size:.78rem;padding:3px 8px}
 </style>
 <style>
 .sprng{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
@@ -300,6 +335,38 @@ select{width:100%;font:inherit;font-size:.92rem;border:1px solid var(--line);bor
 </style>
 </head>
 <body>
+<div id="authGate" hidden>
+  <div class="authCard" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <h2 id="authTitle">คำนวณและเขียนแปลงที่ดิน ส.ป.ก.</h2>
+    <p class="sub">ใช้งานได้เฉพาะผู้ที่ลงทะเบียนและได้รับอนุมัติแล้ว</p>
+    <div class="authTabs" role="tablist">
+      <button type="button" role="tab" id="authTabIn" aria-selected="true">เข้าสู่ระบบ</button>
+      <button type="button" role="tab" id="authTabReg" aria-selected="false">ลงทะเบียน</button>
+    </div>
+    <form id="authFormIn" autocomplete="on">
+      <label for="auEmail">อีเมล</label><input type="email" id="auEmail" autocomplete="username" required>
+      <label for="auPw">รหัสผ่าน</label><input type="password" id="auPw" autocomplete="current-password" required>
+      <button type="submit" class="primary">เข้าสู่ระบบ</button>
+    </form>
+    <form id="authFormReg" hidden autocomplete="on">
+      <label for="arName">ชื่อ-สกุล *</label><input type="text" id="arName" autocomplete="name" required>
+      <div class="row2a">
+        <div><label for="arPos">ตำแหน่ง</label><input type="text" id="arPos"></div>
+        <div><label for="arPhone">เบอร์โทร</label><input type="tel" id="arPhone" autocomplete="tel"></div>
+      </div>
+      <label for="arOffice">หน่วยงาน</label><input type="text" id="arOffice" placeholder="เช่น ส.ป.ก.จังหวัดจันทบุรี">
+      <label for="arEmail">อีเมล *</label><input type="email" id="arEmail" autocomplete="username" required>
+      <div class="row2a">
+        <div><label for="arPw">รหัสผ่าน * (8 ตัวขึ้นไป)</label><input type="password" id="arPw" autocomplete="new-password" minlength="8" required></div>
+        <div><label for="arPw2">ยืนยันรหัสผ่าน *</label><input type="password" id="arPw2" autocomplete="new-password" minlength="8" required></div>
+      </div>
+      <button type="submit" class="primary">ส่งคำขอลงทะเบียน</button>
+    </form>
+    <p class="authMsg" id="authMsg" role="status" aria-live="polite"></p>
+    <p class="authFoot">ลงทะเบียนแล้วต้องรอผู้ดูแลระบบอนุมัติก่อนจึงเข้าใช้งานได้ · ลืมรหัสผ่านติดต่อผู้ดูแลระบบ</p>
+  </div>
+</div>
+<div id="authModal" hidden><div class="authCard" role="dialog" aria-modal="true"><button type="button" class="x" id="authModalX" aria-label="ปิด">✕</button><div id="authModalBody"></div></div></div>
 <div id="s9Wrap" hidden role="dialog" aria-modal="true" aria-label="แบบคำนวณพิกัดฉากและเนื้อที่">
   <div id="s9View"></div>
   <div id="s9Side">
@@ -2674,7 +2741,9 @@ function render(){
         fill = f.pat==='solid' ? f.color : `url(#pf${i})`;
         fo = f.op/100;
       }
-      g += `<path data-l="PARCEL" d="${d}" fill="${fill}" fill-opacity="${fo}" stroke="#1B1B1B" stroke-width="1" stroke-linejoin="round"/>`;
+      // พื้นแปลงเต็มรูป · เส้นขอบเขตถูกตัดตรงวงหมุด (หน้ากาก mkHoles) เส้นจึงแค่ชนขอบวงหมุด ในวงหมุดโปร่งใส
+      if (fill!=='none') g += `<path data-l="PARCEL" d="${d}" fill="${fill}" fill-opacity="${fo}" stroke="none"/>`;
+      g += `<path data-l="PARCEL" d="${d}" fill="none" stroke="#1B1B1B" stroke-width="1" stroke-linejoin="round" mask="url(#mkHoles)"/>`;
     });
     // แปลงคง: เส้นสีแดงขนานเข้าด้านในของเส้นขอบเขต ห่างเท่ารัศมีหมุด (มม. บนกระดาษ จึงเปลี่ยนระยะบนพื้นดินตามมาตราส่วน)
     state.parcels.forEach(p=>{
@@ -2774,12 +2843,15 @@ function render(){
   // markers: circles first, then two-line numbers placed outside the parcels without touching any line
   const owners = new Map();
   state.parcels.forEach(p=>p.keys.forEach(k=>{ if(!owners.has(k)) owners.set(k,[]); owners.get(k).push(p.centroid); }));
+  let holes='';
   for (const m of all){
     const x=X(m.e), y=Y(m.n);
-    g += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${r.toFixed(2)}" data-l="MARKER" fill="#ffffff" stroke="#C8322B" stroke-width="${markerStroke.toFixed(2)}"/>`;
+    holes += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${r.toFixed(2)}" fill="#000"/>`;
+    g += `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${r.toFixed(2)}" data-l="MARKER" fill="#ffffff" fill-opacity="0" stroke="#C8322B" stroke-width="${markerStroke.toFixed(2)}"/>`;
     obstacles.push({x:x-r-2, y:y-r-2, w:2*r+4, h:2*r+4});
     if (state.selMarker===m.key) g += `<circle class="sel" cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${(r+7).toFixed(2)}" fill="none" stroke="#1F4E8C" stroke-width="2.5"/>`;
   }
+  g += `<defs><mask id="mkHoles" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="#fff"/>${holes}</mask></defs>`;
   // every line the numbers must not cross: parcel boundaries + offset (dashed) lines
   const segs = []; state.lastSegs = segs;
   state.parcels.forEach(p=>p.edges.forEach(ed=>segs.push([X(ed.from.e),Y(ed.from.n),X(ed.to.e),Y(ed.to.n)])));
@@ -5126,10 +5198,7 @@ function tplGuideSync(){
   $('tplGuideRemove').hidden=!g; $('tplGuideCtl').hidden=!g;
   $('tplGuideOpV').textContent=$('tplGuideOp').value+'%';
 }
-async function tplGuideLoad(f){
-  const id=tplId(); if (!id) return;
-  $('tplGuideHint').textContent='กำลังอ่านภาพ…';
-  try{
+async function guideImgFromFile(f){
     const MAXH=1600; let c;
     if (/\.tiff?$/i.test(f.name) || f.type==='image/tiff'){
       const GT=await bgGeoTiffLib(), tiff=await GT.fromArrayBuffer(await f.arrayBuffer()), im=await tiff.getImage();
@@ -5144,7 +5213,13 @@ async function tplGuideLoad(f){
       c=document.createElement('canvas'); c.width=Math.round(bmp.width*k); c.height=Math.round(bmp.height*k);
       c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
     }
-    const g={src:c.toDataURL('image/jpeg',0.8), w:c.width, h:c.height, name:f.name};
+  return {src:c.toDataURL('image/jpeg',0.8), w:c.width, h:c.height, name:f.name};
+}
+async function tplGuideLoad(f){
+  const id=tplId(); if (!id) return;
+  $('tplGuideHint').textContent='กำลังอ่านภาพ…';
+  try{
+    const g=await guideImgFromFile(f);
     TPL_GUIDE[id]=g;
     try{ localStorage.setItem(tplGuideKey(id), JSON.stringify(g)); }catch(e){}
     $('tplGuideShow').checked=true;
@@ -5936,6 +6011,215 @@ function admBind(){
 })();
 
 render();
+</script>
+<script>
+// ---------- ระบบลงทะเบียน (บังคับทุกคน) + ภาพแนวเทียบจากระบบกลาง ----------
+// ใส่ URL ของ Google Apps Script (ลงท้ายด้วย /exec) ที่นี่ ถ้าเว้นว่างจะไม่เปิดระบบลงทะเบียน
+const AUTH_API = 'https://script.google.com/macros/s/AKfycbz7pkugWbKGoE37KMEG_W-0U62O4IzLHlMXKedl7xhhXT7L8SsQocTwcNdJx0IOTwOphA/exec';
+(function(){
+  const AKEY='parcel.auth', GKEY='parcel.gc.';
+  let AUTH=null; try{ AUTH=JSON.parse(localStorage.getItem(AKEY)||'null'); }catch(e){}
+  const GUIDE_C={};
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); return true; }catch(e){ return false; } };
+  const lsDel=k=>{ try{ localStorage.removeItem(k); }catch(e){} };
+  const gate=$('authGate'), msg=$('authMsg');
+  const say=(t,cls)=>{ msg.textContent=t||''; msg.className='authMsg'+(cls?' '+cls:''); };
+
+  async function api(action, data){
+    let r;
+    try{ r=await fetch(AUTH_API,{method:'POST',body:JSON.stringify(Object.assign({action, token:AUTH&&AUTH.token}, data||{}))}); }
+    catch(e){ const er=new Error('เชื่อมต่อระบบไม่ได้ ตรวจสอบอินเทอร์เน็ต'); er.code='net'; throw er; }
+    let j; try{ j=await r.json(); }catch(e){ const er=new Error('ระบบตอบกลับไม่ถูกต้อง'); er.code='net'; throw er; }
+    if (!j.ok){ const er=new Error(j.error||'เกิดข้อผิดพลาด'); er.code=j.code||''; throw er; }
+    return j;
+  }
+
+  // ----- ภาพแนวเทียบจากระบบกลาง: ใช้เมื่อเครื่องนี้ไม่ได้เลือกภาพของตัวเอง -----
+  const localGuide=tplGuideGet;
+  tplGuideGet=function(id){ return localGuide(id) || GUIDE_C[id] || null; };
+  function guidePost(){
+    const id=tplId(); if (!id || !tplDef()) return;
+    const loc=localGuide(id), c=GUIDE_C[id];
+    $('tplGuideRemove').hidden=!loc;
+    if (!loc && c){ $('tplGuideCtl').hidden=false; $('tplGuideHint').textContent='ใช้ภาพแนวเทียบจากระบบกลาง'+(c.name?' · '+c.name:'')+' · เลือกภาพของตัวเองเพื่อใช้แทนบนเครื่องนี้ได้'; }
+  }
+  { const _s=tplGuideSync; tplGuideSync=function(){ _s(); guidePost(); }; }
+  $('tplSel').addEventListener('change', guidePost);
+  $('tplGuideRemove').addEventListener('click', ()=>setTimeout(()=>{ tplGuideSync(); render(); },0));
+  function guideFromCache(){
+    for (let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if (k && k.startsWith(GKEY)){ try{ GUIDE_C[k.slice(GKEY.length)]=JSON.parse(localStorage.getItem(k)); }catch(e){} } }
+  }
+  function guideClear(){
+    Object.keys(GUIDE_C).forEach(k=>delete GUIDE_C[k]);
+    const ks=[]; for (let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if (k && k.startsWith(GKEY)) ks.push(k); } ks.forEach(lsDel);
+  }
+  function guideRefresh(){ tplGuideSync(); if (state.markers.size) render(); }
+  let GLIST=[];
+  async function guideSync(){
+    const {guides}=await api('guideList'); GLIST=guides||[];
+    const ids=new Set(GLIST.map(g=>g.id));
+    Object.keys(GUIDE_C).forEach(id=>{ if (!ids.has(id)){ delete GUIDE_C[id]; lsDel(GKEY+id); } });
+    for (const g of GLIST){
+      if (GUIDE_C[g.id] && GUIDE_C[g.id].ver===g.ver) continue;
+      const r=await api('guideGet',{id:g.id});
+      GUIDE_C[g.id]={src:r.src, w:r.w, h:r.h, name:r.name, ver:r.ver};
+      lsSet(GKEY+g.id, JSON.stringify(GUIDE_C[g.id]));
+    }
+    guideRefresh();
+  }
+
+  // ----- หน้าเข้าสู่ระบบ / ลงทะเบียน -----
+  function tab(reg){
+    $('authTabIn').setAttribute('aria-selected', !reg); $('authTabReg').setAttribute('aria-selected', !!reg);
+    $('authFormIn').hidden=!!reg; $('authFormReg').hidden=!reg; say('');
+    (reg?$('arName'):$('auEmail')).focus();
+  }
+  $('authTabIn').onclick=()=>tab(false); $('authTabReg').onclick=()=>tab(true);
+  gate.addEventListener('keydown', e=>e.stopPropagation());
+  $('authModal').addEventListener('keydown', e=>{ e.stopPropagation(); if (e.key==='Escape') closeModal(); });
+  function lock(){ gate.hidden=false; document.documentElement.style.overflow='hidden'; chip(); setTimeout(()=>$('auEmail').focus(),0); }
+  function unlock(){ gate.hidden=true; document.documentElement.style.overflow=''; chip(); }
+  function busy(form, on){ form.querySelectorAll('button,input').forEach(el=>el.disabled=on); }
+
+  $('authFormIn').addEventListener('submit', async ev=>{
+    ev.preventDefault(); const f=ev.target; busy(f,true); say('กำลังตรวจสอบ…');
+    try{
+      const r=await api('login',{email:$('auEmail').value, password:$('auPw').value});
+      AUTH={token:r.token, exp:r.exp, user:r.user}; lsSet(AKEY, JSON.stringify(AUTH));
+      $('auPw').value=''; say(''); unlock();
+      guideSync().catch(()=>{});
+    }catch(e){ say(e.message, 'err'); }
+    busy(f,false);
+  });
+  $('authFormReg').addEventListener('submit', async ev=>{
+    ev.preventDefault(); const f=ev.target;
+    if ($('arPw').value!==$('arPw2').value){ say('รหัสผ่านทั้งสองช่องไม่ตรงกัน','err'); return; }
+    busy(f,true); say('กำลังส่งคำขอ…');
+    try{
+      const email=$('arEmail').value.trim();
+      const r=await api('register',{name:$('arName').value, position:$('arPos').value, office:$('arOffice').value, phone:$('arPhone').value, email, password:$('arPw').value});
+      f.reset(); tab(false); $('auEmail').value=email;
+      if (r.status==='approved') say('ลงทะเบียนเป็นผู้ดูแลระบบแล้ว เข้าสู่ระบบได้เลย','ok');
+      else say('ส่งคำขอลงทะเบียนแล้ว รอผู้ดูแลระบบอนุมัติ จากนั้นจึงเข้าสู่ระบบได้','ok');
+    }catch(e){ say(e.message,'err'); }
+    busy(f,false);
+  });
+
+  async function logout(){
+    try{ if (AUTH) await api('logout'); }catch(e){}
+    AUTH=null; lsDel(AKEY); guideClear(); guideRefresh(); closeModal(); lock();
+  }
+
+  // ----- ป้ายชื่อผู้ใช้ที่หัวแอป -----
+  function chip(){
+    let el=$('authChip');
+    if (!AUTH_API || !AUTH || !gate.hidden){ if (el) el.remove(); return; }
+    if (!el){ el=document.createElement('details'); el.id='authChip'; const h=document.querySelector('.apphead'); h.appendChild(el);
+      document.addEventListener('click', e=>{ if (el.open && !el.contains(e.target)) el.open=false; }); }
+    const u=AUTH.user||{}, adm=u.role==='admin';
+    el.innerHTML=`<summary title="บัญชีผู้ใช้">👤 ${esc(u.name||u.email)}<span class="badge" id="authPend" hidden></span></summary><div class="menu">
+      <div class="who">${esc(u.name)}<br>${esc([u.position,u.office].filter(Boolean).join(' · '))}<br>${esc(u.email)}${adm?'<br>ผู้ดูแลระบบ':''}</div>
+      ${adm?'<button type="button" data-a="admin">จัดการผู้ใช้และภาพแนวเทียบ</button>':''}
+      <button type="button" data-a="pw">เปลี่ยนรหัสผ่าน</button>
+      <button type="button" data-a="out">ออกจากระบบ</button></div>`;
+    el.querySelector('.menu').onclick=e=>{ const a=e.target.closest('button[data-a]'); if (!a) return; el.open=false;
+      if (a.dataset.a==='out') logout(); else if (a.dataset.a==='pw') pwDialog(); else adminDialog(); };
+  }
+
+  // ----- กล่องโต้ตอบ -----
+  function openModal(html){ $('authModalBody').innerHTML=html; $('authModal').hidden=false; }
+  function closeModal(){ $('authModal').hidden=true; $('authModalBody').innerHTML=''; }
+  $('authModalX').onclick=closeModal;
+  $('authModal').addEventListener('click', e=>{ if (e.target.id==='authModal') closeModal(); });
+  function authErr(e){ if (e.code==='auth'){ logout(); say(e.message,'err'); } return e.message; }
+
+  function pwDialog(){
+    openModal(`<h2>เปลี่ยนรหัสผ่าน</h2><form id="pwF" style="max-width:360px">
+      <label for="pwOld">รหัสผ่านเดิม</label><input type="password" id="pwOld" autocomplete="current-password" required>
+      <label for="pwNew">รหัสผ่านใหม่ (8 ตัวขึ้นไป)</label><input type="password" id="pwNew" autocomplete="new-password" minlength="8" required>
+      <label for="pwNew2">ยืนยันรหัสผ่านใหม่</label><input type="password" id="pwNew2" autocomplete="new-password" minlength="8" required>
+      <button type="submit" class="primary">บันทึก</button><p class="authMsg" id="pwMsg"></p></form>`);
+    $('authModal').querySelector('.authCard').style.maxWidth='420px';
+    $('pwF').onsubmit=async ev=>{ ev.preventDefault(); const m=$('pwMsg');
+      if ($('pwNew').value!==$('pwNew2').value){ m.className='authMsg err'; m.textContent='รหัสผ่านใหม่ทั้งสองช่องไม่ตรงกัน'; return; }
+      try{ await api('changePassword',{old:$('pwOld').value, password:$('pwNew').value}); m.className='authMsg ok'; m.textContent='เปลี่ยนรหัสผ่านแล้ว'; ev.target.reset(); }
+      catch(e){ m.className='authMsg err'; m.textContent=authErr(e); } };
+  }
+
+  const ST={pending:'รออนุมัติ', approved:'อนุมัติ', suspended:'ระงับ'};
+  const dt=t=>t?new Date(t).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}):'–';
+  async function adminDialog(){
+    openModal(`<h2>จัดการผู้ใช้และภาพแนวเทียบ</h2><p class="authMsg" id="admMsg">กำลังโหลด…</p><div id="admBody"></div>`);
+    const card=$('authModal').querySelector('.authCard'); card.style.maxWidth='';
+    const m=$('admMsg'), body=$('admBody');
+    const note=(t,c)=>{ m.textContent=t||''; m.className='authMsg'+(c?' '+c:''); };
+    let users=[];
+    async function load(){
+      try{ [users]=await Promise.all([api('adminUsers').then(r=>r.users), api('guideList').then(r=>{ GLIST=r.guides||[]; })]); note(''); draw(); pendBadge(users); }
+      catch(e){ note(authErr(e),'err'); }
+    }
+    function draw(){
+      users.sort((a,b)=>(a.status==='pending'?0:1)-(b.status==='pending'?0:1) || (b.created||0)-(a.created||0));
+      const me=(AUTH.user||{}).email;
+      const urows=users.map(u=>`<tr class="${u.status==='pending'?'pend':''}" data-e="${esc(u.email)}">
+        <td><b>${esc(u.name)}</b><br>${esc(u.position)}${u.office?'<br>'+esc(u.office):''}</td>
+        <td>${esc(u.email)}${u.phone?'<br>'+esc(u.phone):''}</td>
+        <td><select data-k="status" aria-label="สถานะ" ${u.email===me?'disabled':''}>${Object.entries(ST).map(([k,v])=>`<option value="${k}" ${u.status===k?'selected':''}>${v}</option>`).join('')}</select></td>
+        <td><select data-k="role" aria-label="สิทธิ์" ${u.email===me?'disabled':''}><option value="user" ${u.role!=='admin'?'selected':''}>ผู้ใช้</option><option value="admin" ${u.role==='admin'?'selected':''}>ผู้ดูแล</option></select></td>
+        <td>สมัคร ${dt(u.created)}<br>เข้าล่าสุด ${dt(u.lastLogin)}</td>
+        <td>${u.email===me?'':'<button type="button" data-b="reset">รีเซ็ตรหัส</button> <button type="button" data-b="del">ลบ</button>'}</td></tr>`).join('');
+      const opts=[...$('tplSel').options].filter(o=>o.value);
+      const gmap=Object.fromEntries(GLIST.map(g=>[g.id,g]));
+      const grows=opts.map(o=>{ const g=gmap[o.value]; return `<tr data-t="${esc(o.value)}"><td>${esc(o.textContent)}</td>
+        <td>${g?`มีแล้ว · ${esc(g.name||'')}<br>${dt(g.ver)} · ${Math.round((g.size||0)/1024)} KB`:'ยังไม่มี'}</td>
+        <td><label class="filebtn" style="font-size:.78rem;padding:3px 8px">${g?'เปลี่ยนภาพ':'อัปโหลด'}<input type="file" accept="image/*,.tif,.tiff" hidden></label> ${g?'<button type="button" data-b="gdel">ลบ</button>':''}</td></tr>`; }).join('');
+      body.innerHTML=`<h3 class="admSec">ผู้ใช้ (${users.length} คน · รออนุมัติ ${users.filter(u=>u.status==='pending').length})</h3>
+        <div class="admScroll"><table class="admTbl"><thead><tr><th>ชื่อ / ตำแหน่ง / หน่วยงาน</th><th>อีเมล / โทร</th><th>สถานะ</th><th>สิทธิ์</th><th>วันที่</th><th></th></tr></thead><tbody>${urows||'<tr><td colspan="6">ยังไม่มีผู้ใช้</td></tr>'}</tbody></table></div>
+        <h3 class="admSec">ภาพแนวเทียบกลาง</h3><p class="hint" style="margin:0">ผู้ใช้ที่เข้าสู่ระบบจะได้ภาพนี้อัตโนมัติ (แสดงบนจอเท่านั้น ไม่ออกในงานพิมพ์และไฟล์ส่งออก) · ภาพเก็บใน Google Drive ของผู้ดูแล</p>
+        <div class="admScroll"><table class="admTbl"><thead><tr><th>แบบฟอร์ม</th><th>ภาพ</th><th></th></tr></thead><tbody>${grows}</tbody></table></div>`;
+    }
+    body.addEventListener('change', async e=>{
+      const s=e.target.closest('select[data-k]');
+      if (s){ const email=s.closest('tr').dataset.e; s.disabled=true;
+        try{ await api('adminSetUser',{email, [s.dataset.k]:s.value}); const u=users.find(x=>x.email===email); if (u) u[s.dataset.k]=s.value; note('บันทึกแล้ว · '+email,'ok'); draw(); pendBadge(users); }
+        catch(er){ note(authErr(er),'err'); s.disabled=false; } return; }
+      const fi=e.target.closest('input[type=file]');
+      if (fi && fi.files[0]){ const id=fi.closest('tr').dataset.t, f=fi.files[0]; fi.value='';
+        note('กำลังอ่านและอัปโหลดภาพ…');
+        try{ const g=await guideImgFromFile(f); await api('guidePut',{id, src:g.src, w:g.w, h:g.h, name:f.name});
+          await guideSync(); note('อัปโหลดภาพแนวเทียบแล้ว','ok'); draw(); }
+        catch(er){ note(authErr(er),'err'); } }
+    });
+    body.addEventListener('click', async e=>{
+      const b=e.target.closest('button[data-b]'); if (!b) return;
+      if (b.dataset.b==='gdel'){ const id=b.closest('tr').dataset.t;
+        if (!confirm('ลบภาพแนวเทียบกลางของแบบนี้?')) return;
+        try{ await api('guideDel',{id}); await guideSync(); note('ลบภาพแล้ว','ok'); draw(); }catch(er){ note(authErr(er),'err'); } return; }
+      const email=b.closest('tr').dataset.e;
+      if (b.dataset.b==='reset'){
+        if (!confirm('ตั้งรหัสผ่านชั่วคราวใหม่ให้ '+email+'?')) return;
+        try{ const r=await api('adminResetPw',{email}); note('รหัสผ่านชั่วคราวของ '+email+' คือ  '+r.password+'  · แจ้งผู้ใช้แล้วให้เปลี่ยนรหัสผ่านหลังเข้าสู่ระบบ','ok'); }
+        catch(er){ note(authErr(er),'err'); }
+      } else if (b.dataset.b==='del'){
+        if (!confirm('ลบผู้ใช้ '+email+' ออกจากระบบ?')) return;
+        try{ await api('adminDeleteUser',{email}); users=users.filter(u=>u.email!==email); note('ลบผู้ใช้แล้ว','ok'); draw(); pendBadge(users); }
+        catch(er){ note(authErr(er),'err'); }
+      }
+    });
+    load();
+  }
+  function pendBadge(users){ const b=$('authPend'); if (!b) return; const n=users.filter(u=>u.status==='pending').length; b.hidden=!n; b.textContent=n; }
+
+  // ----- เริ่มต้น -----
+  if (!AUTH_API) return;                                   // ยังไม่ได้ตั้งค่าระบบลงทะเบียน
+  if (!AUTH || !AUTH.token || !(AUTH.exp>Date.now())){ AUTH=null; lsDel(AKEY); guideClear(); lock(); return; }
+  guideFromCache(); unlock(); guideRefresh();
+  api('me').then(r=>{ AUTH.user=r.user; lsSet(AKEY, JSON.stringify(AUTH)); chip();
+    if (r.user.role==='admin') api('adminUsers').then(x=>pendBadge(x.users)).catch(()=>{});
+    return guideSync(); })
+   .catch(e=>{ if (e.code==='auth'){ AUTH=null; lsDel(AKEY); guideClear(); guideRefresh(); lock(); say(e.message,'err'); } });   // ออฟไลน์: ใช้ต่อได้จนหมดอายุ
+})();
 </script>
 </body>
 </html>
