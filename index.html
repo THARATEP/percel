@@ -4085,7 +4085,22 @@ window.addEventListener('resize', ()=>showMarkerInfo());
 // saving files
 let downloads = null;
 (async()=>{ try{ if (window.claude && window.claude.use) downloads = await window.claude.use('downloads'); }catch(e){} })();
+// บันทึกไฟล์: Chrome/Edge บนคอมพิวเตอร์ (และแอปที่ติดตั้ง) เปิดหน้าต่างให้เลือกโฟลเดอร์และแก้ชื่อไฟล์ได้ · เบราว์เซอร์อื่นดาวน์โหลดลงโฟลเดอร์ดาวน์โหลดตามปกติ
+const SAVE_MIME={json:['application/json','ไฟล์งาน'], pdf:['application/pdf','PDF'], dxf:['application/dxf','DXF (AutoCAD)'], zip:['application/zip','ZIP'], png:['image/png','ภาพ PNG'], svg:['image/svg+xml','SVG'], csv:['text/csv','CSV']};
+async function savePick(name, data){
+  if (typeof window.showSaveFilePicker!=='function' || window.top!==window) return false;   // ใช้ไม่ได้ในกรอบหน้าเว็บอื่น (เช่น ลิงก์ claude.ai)
+  const ext=(name.match(/\.([a-z0-9]+)$/i)||[])[1]||'', mt=SAVE_MIME[ext.toLowerCase()];
+  try{
+    const h=await window.showSaveFilePicker({suggestedName:name, id:'apg-save', ...(mt ? {types:[{description:mt[1], accept:{[mt[0]]:['.'+ext.toLowerCase()]}}]} : {})});
+    const w=await h.createWritable(); await w.write(data instanceof Blob ? data : new Blob([data])); await w.close();
+    toast('บันทึกแล้ว: '+h.name); return true;
+  }catch(e){
+    if (e && e.name==='AbortError') return true;                     // ผู้ใช้กดยกเลิก: ไม่ต้องดาวน์โหลดแทน
+    return false;                                                       // เช่น เตรียมไฟล์นานจนหมดสิทธิ์เปิดหน้าต่าง: ดาวน์โหลดแทน
+  }
+}
 async function save(name, data){
+  if (await savePick(name, data)) return;
   if (downloads){
     try{ await downloads.save({filename:name, data}); toast('บันทึกไฟล์แล้ว'); }
     catch(e){ if (e && e.code!=='declined') toast('บันทึกไม่สำเร็จ: '+(e.message||e.code)); }
@@ -4095,7 +4110,27 @@ async function save(name, data){
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
 }
-function fileBase(){ const n = state.hasParcelCol ? 'parcels' : ('parcel-'+(opt().parcelNo||'map')); return n.replace(/[\\/:*?"<>|\s]+/g,'_'); }
+// ชื่อไฟล์: เลขระวาง (หรือเลขกลุ่ม) ต่อด้วยเลขแปลง เช่น 5236IV4022-6_15 · ไม่มีเลขระวาง/กลุ่ม = ใช้เลขแปลงอย่างเดียว
+function fileRawang(){
+  const d=(typeof tplDef==='function') && tplDef(), fs=(d && d.fields) ? d.fields.map(f=>f.id).filter(Boolean) : [];
+  const pick=ids=>{ for (const id of ids){ const v=(typeof fv==='function') ? fv(id) : tplVals[id]; if (v!=null && String(v).trim()) return String(v).trim(); } return ''; };
+  const s9=(typeof S9==='object' && S9 && S9.s9_rawang) ? String(S9.s9_rawang).trim() : '';
+  const tv=ids=>{ for (const id of ids){ const v=tplVals[id]; if (v!=null && String(v).trim()) return String(v).trim(); } return ''; };   // ค่าที่กรอกไว้ในแบบอื่นของงานเดียวกัน
+  const isR=id=>/(^|_)rawang$/i.test(id), isG=id=>/group/i.test(id);
+  return pick(fs.filter(isR)) || pick(fs.filter(isG)) || tv(Object.keys(tplVals).filter(isR)) || tv(Object.keys(tplVals).filter(isG)) || s9;
+}
+function fileParcelNo(){
+  const ps=(state.parcels||[]).filter(p=>p.closed!==false);
+  const sel=state.selItem && state.selItem.startsWith('parcel:') ? state.parcels[+state.selItem.slice(7)] : null;
+  const nos=(sel ? [sel] : ps).map(p=>{ try{ return parcelShownNo(p); }catch(e){ return p.label; } }).filter(x=>x!=null && String(x).trim()!=='');
+  if (!nos.length) return String(opt().parcelNo||'').trim();
+  return nos.length<=3 ? nos.join('-') : `${nos[0]}-${nos[nos.length-1]}`;
+}
+function fileBase(){
+  const r=fileRawang(), n=fileParcelNo();
+  const t = r && n ? `${r}_${n}` : r ? r : n ? `แปลง${n}` : (state.hasParcelCol ? 'parcels' : 'parcel-map');
+  return t.replace(/[\\/]+/g,'-').replace(/[:*?"<>|]+/g,'').replace(/\s+/g,'').replace(/^[.\-_]+|[.\-_]+$/g,'') || 'parcel-map';
+}
 // ---------- ขาวดำ: สีที่มีเฉดสี (แดง เขียว น้ำเงิน ...) กลายเป็นดำ · สีพื้นอ่อนถูกเอาออก · สีเทา/ดำ/ขาวเดิมคงไว้ ----------
 function outMono(){ const d=(typeof tplDef==='function') && tplDef(); if (d && d.colorOut) return false; const el=$('outColor'); return !!el && el.value==='bw'; }   // แบบแผนที่ภาพถ่ายพิมพ์สีเสมอ
 function parseRGB(v){
@@ -4570,7 +4605,7 @@ function workSnapshot(){
 }
 function workFileName(){
   const d=new Date(), z=n=>String(n).padStart(2,'0');
-  return `${fileBase()}-work-${d.getFullYear()}${z(d.getMonth()+1)}${z(d.getDate())}-${z(d.getHours())}${z(d.getMinutes())}.json`;
+  return `${fileBase()}.json`;   // ชื่อเดียวกับงาน (ระวาง_แปลง) · เลือกที่เก็บและแก้ชื่อได้ในหน้าต่างบันทึก
 }
 function workSave(){
   if (!state.rows || !state.rows.length){ toast('ยังไม่มีงานให้บันทึก นำเข้าค่าพิกัดก่อน'); return; }
