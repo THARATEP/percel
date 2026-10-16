@@ -67,7 +67,7 @@ th:first-child,td:first-child{text-align:left}
 th{color:var(--muted);font-weight:500}
 #modeBar{position:absolute;left:8px;right:8px;top:8px;z-index:7;box-shadow:0 4px 14px rgba(0,0,0,.2);display:flex;gap:10px;align-items:center;justify-content:space-between;background:#1F4E8C;color:#fff;border-radius:8px;padding:8px 12px;font-size:.92rem}
 #modeBar[hidden]{display:none}
-#orthoSeg{display:inline-flex;gap:2px;margin-right:6px}#orthoSeg[hidden]{display:none}#arrStyle{margin-right:6px;padding:4px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.55);background:#fff;color:#1F4E8C;font:inherit;font-size:.9rem;max-width:150px}#arrStyle[hidden]{display:none}#sdArrow[hidden]{display:none}@media (max-width:860px){#modeBar{flex-wrap:wrap;row-gap:6px;padding:6px 10px}#modeText{flex:1 1 100%;font-size:.85rem;line-height:1.4}#modeBar>.row{margin-left:auto}#modeBar button{white-space:nowrap;padding:5px 10px}}
+#orthoSeg{display:inline-flex;gap:2px;margin-right:6px}#orthoSeg[hidden]{display:none}#arrStyle{margin-right:6px;padding:4px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.55);background:#fff;color:#1F4E8C;font:inherit;font-size:.9rem;max-width:150px}#arrStyle[hidden]{display:none}#measMode{margin-right:6px;padding:4px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.55);background:#fff;color:#1F4E8C;font:inherit;font-size:.9rem;max-width:180px}#measMode[hidden]{display:none}#measHead{margin-right:6px;padding:4px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.55);background:#fff;color:#1F4E8C;font:inherit;font-size:.9rem;max-width:150px}#measHead[hidden]{display:none}#sdDimHead[hidden],#sdHs[hidden]{display:none}#sdArrow[hidden]{display:none}@media (max-width:860px){#modeBar{flex-wrap:wrap;row-gap:6px;padding:6px 10px}#modeText{flex:1 1 100%;font-size:.85rem;line-height:1.4}#modeBar>.row{margin-left:auto}#modeBar button{white-space:nowrap;padding:5px 10px}}
 #edBox.pno{width:220px}#edBox.pno textarea{height:2.3em;min-height:0;resize:none;font-size:1.1rem;padding:4px 8px}#edBox.pno .sub,#edBox.pno #edReset{display:none}
 #modeBar #orthoSeg button{min-width:34px;padding:4px 6px;font-size:1rem;line-height:1;background:transparent;color:#fff;border-color:rgba(255,255,255,.55);font-weight:400}#modeBar #orthoSeg button.on{background:#fff;color:#1F4E8C;border-color:#fff;font-weight:700}
 #modeBar button{background:#fff;color:#1F4E8C;border-color:#fff;font-weight:600}
@@ -618,6 +618,7 @@ select{width:100%;font:inherit;font-size:.92rem;border:1px solid var(--line);bor
       <option value="spk431">แบบ ส.ป.ก. 4-31 · รูปแผนที่ประกอบหนังสืออนุญาตฯ</option>
       <option value="aerial">ภาพถ่ายทางอากาศ</option>
       <option value="map50k">แผนที่ 1 : 50,000</option>
+      <option value="depth">แผนที่ระยะความลึกแปลง</option>
     </select>
     <p class="hint" id="tplHint">เมื่อเลือกแบบฟอร์ม กระดาษและกรอบรูปแผนที่จะเป็นไปตามแบบ · ช่องที่เว้นว่างจะพิมพ์เป็นเส้นประไว้เขียนมือ</p>
     <div id="tplExtra" hidden>
@@ -848,8 +849,8 @@ select{width:100%;font:inherit;font-size:.92rem;border:1px solid var(--line);bor
     <button id="doPrint" class="primary" aria-label="พิมพ์แผนที่" data-tip="พิมพ์แผนที่"><span class="ic">🖨</span><span class="lb">พิมพ์</span></button>
     <button id="exOpen" class="primary" aria-haspopup="menu" aria-expanded="false" aria-label="ส่งออกไฟล์ PDF · PNG · SVG · DXF" data-tip="ส่งออกไฟล์ PDF · PNG · SVG · DXF"><span class="ic">⬇</span><span class="lb">ส่งออก</span> ▾</button>
   </div>
-<div id="cmdDock"><div id="cmdBar" role="toolbar" aria-label="คำสั่งเขียนแบบ"><button type="button" data-cmd="select" data-tip="เลือก ย้าย แก้ไข วัตถุบนแผนที่ (กด Esc เมื่อไรก็กลับมาที่คำสั่งนี้)" aria-label="เลือก"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l10 8-4.5 1 2.6 5-2.2 1.1-2.6-5L5 16z" fill="currentColor" stroke="none"/></svg><span>เลือก</span><kbd>Esc</kbd></button><span class="sep"></span><button type="button" data-cmd="parcel" data-tip="เขียนรูปแปลง: แตะหมุดตามแนวเขต แตะหมุดแรกเพื่อปิดรูป แล้วเขียนแปลงถัดไปต่อได้เลย · เลขแปลงเพิ่มให้เอง" aria-label="แปลง"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l6.5 4.7-2.5 7.8H6L3.5 7.7z"/><circle cx="10" cy="3" r="1.4" fill="currentColor"/><circle cx="16.5" cy="7.7" r="1.4" fill="currentColor"/><circle cx="14" cy="15.5" r="1.4" fill="currentColor"/><circle cx="6" cy="15.5" r="1.4" fill="currentColor"/><circle cx="3.5" cy="7.7" r="1.4" fill="currentColor"/></svg><span>แปลง</span><kbd>PA</kbd></button><button type="button" data-cmd="autoparcel" data-tip="แปลงอัตโนมัติ: สร้างรูปแปลงทันทีตามลำดับหมุดในไฟล์ (แยกแปลงตามคอลัมน์เลขแปลงถ้ามี) · แทนที่รูปแปลงเดิม ย้อนกลับได้" aria-label="แปลงอัตโนมัติ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4l5 3.6-1.9 6H5.4L3.5 7.6z"/><path d="M15.6 1.8l-1.6 3h2.4l-1.8 3.2" stroke-width="1.4"/><circle cx="8.5" cy="4" r="1.2" fill="currentColor"/><circle cx="5.4" cy="13.6" r="1.2" fill="currentColor"/><circle cx="11.6" cy="13.6" r="1.2" fill="currentColor"/></svg><span>แปลงอัตโนมัติ</span><kbd>AP</kbd></button><button type="button" data-cmd="offset" data-tip="เส้นขนานห่าง 5 มม. บนกระดาษ (ปรับตามมาตราส่วนให้เอง): แตะเส้นขอบเขต แล้วแตะด้านที่จะให้เส้นไป · ทำต่อเนื่องได้หลายเส้น" aria-label="Offset"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 15L15 3"/><path d="M6.5 17.5L17.5 6.5" stroke-dasharray="2.6 1.8"/><path d="M11 11.5l2 2" stroke-width="1.2"/></svg><span>Offset</span><kbd>O</kbd></button><button type="button" data-cmd="leader" data-tip="เส้นยาว 5 มม. ออกจากหมุด: แตะหมุด แล้วแตะทิศที่จะให้เส้นชี้ไป · ทำต่อเนื่องได้หลายหมุด" aria-label="เส้นจากหมุด"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="14" r="2.6"/><path d="M8 12l8-8"/></svg><span>เส้นจากหมุด</span><kbd>LE</kbd></button><span class="sep"></span><button type="button" data-cmd="line" data-tip="เส้นตรง: แตะจุดเริ่มต้นและจุดปลาย · ทำต่อเนื่องได้ · ล็อกแนวนอน/แนวตั้งหรือ 45° ได้ที่แถบคำสั่งขณะเขียน (F8) · แตะเลือกเส้นเพื่อเปลี่ยนชนิดเส้น ความหนา สี" aria-label="Line"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16L16 4"/><circle cx="4" cy="16" r="1.6" fill="currentColor"/><circle cx="16" cy="4" r="1.6" fill="currentColor"/></svg><span>Line</span><kbd>L</kbd></button><button type="button" data-cmd="pline" data-tip="เส้นหลายท่อน: แตะจุดไปเรื่อย ๆ แล้วกด Enter หรือปุ่มวางเส้นเพื่อจบ" aria-label="Pline"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16l4-9 5 6 5-9"/><circle cx="3" cy="16" r="1.4" fill="currentColor"/><circle cx="7" cy="7" r="1.4" fill="currentColor"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/><circle cx="17" cy="4" r="1.4" fill="currentColor"/></svg><span>Pline</span><kbd>PL</kbd></button><button type="button" data-cmd="arrow" data-tip="ลูกศรชี้: แตะจุดเริ่ม (หาง) แล้วแตะจุดที่ต้องการชี้ ระบบใส่หัวลูกศรที่จุดปลาย · ทำต่อเนื่องได้ · ใช้ชนิดเส้น/ความหนา/สีเดียวกับ Line" aria-label="ลูกศร"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 16.5L14 6"/><path d="M8.6 5h6.4v6.4" /></svg><span>ลูกศร</span><kbd>AR</kbd></button><button type="button" data-cmd="trim" data-tip="ตัดเส้น: แตะส่วนของเส้นที่จะตัดทิ้ง ระบบตัดถึงจุดตัดที่ใกล้ที่สุด" aria-label="Trim"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h14"/><path d="M12 4v12" stroke-width="1.2"/><path d="M14 7l4 6M18 7l-4 6" stroke-width="1.4"/></svg><span>Trim</span><kbd>TR</kbd></button><button type="button" data-cmd="extend" data-tip="ต่อเส้น: แตะใกล้ปลายเส้นที่จะยืด ระบบต่อไปจนชนเส้นอื่น" aria-label="Extend"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h9" /><path d="M12 10h3" stroke-dasharray="1.6 1.4"/><path d="M17 4v12" stroke-width="2"/><path d="M12 7l3 3-3 3" stroke-width="1.4"/></svg><span>Extend</span><kbd>EX</kbd></button><span class="sep"></span><button type="button" data-cmd="text" data-tip="แตะตำแหน่งบนแผนที่ แล้วพิมพ์ข้อความ (เลือกข้อความสำเร็จรูปได้) กด Enter เพื่อวาง · ขนาด สี ตัวหนา ตั้งได้ในหัวข้อข้อความ" aria-label="ข้อความ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5V3.5h12V5M10 3.5V16.5M7.5 16.5h5"/></svg><span>ข้อความ</span><kbd>T</kbd></button><button type="button" data-cmd="tpath" data-tip="ข้อความไหลตามแนวเส้น: แตะจุดตามแนวคลองหรือถนน แล้วกด Enter แล้วพิมพ์ข้อความ" aria-label="ตามแนวเส้น"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 15c3-6 6-7 15-8" stroke-dasharray="2 1.6"/><path d="M6 11.5l1.2-4.5M5 7.5h4.6M11 10l.6-4.4M10 6h4.4" stroke-width="1.4"/></svg><span>ตามแนวเส้น</span><kbd>TP</kbd></button><span class="sep"></span><button type="button" data-cmd="erase" data-tip="ลบ: แตะวัตถุที่จะลบทีละชิ้น ลบได้ต่อเนื่อง (เส้น ข้อความ เลขหมุด ตัวเลขระยะ แปลง หมุด) · ลบผิดกดย้อนกลับได้" aria-label="ลบ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 16.5l-4-4 8.5-8.5 5.5 5.5-7 7z"/><path d="M7.5 16.5H17"/><path d="M6 10l5 5" stroke-width="1.2"/></svg><span>ลบ</span><kbd>E</kbd></button><button type="button" data-cmd="undo" data-tip="ย้อนกลับขั้นตอนล่าสุด (Ctrl+Z)" aria-label="ย้อนกลับ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5L3 9l4 4"/><path d="M3 9h9a5 5 0 010 10H8"/></svg><span>ย้อนกลับ</span><kbd>Ctrl+Z</kbd></button><button type="button" data-cmd="redo" data-tip="ทำซ้ำสิ่งที่ย้อนกลับไป (Ctrl+Y)" aria-label="ทำซ้ำ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 5l4 4-4 4"/><path d="M17 9H8a5 5 0 000 10h4"/></svg><span>ทำซ้ำ</span><kbd>Ctrl+Y</kbd></button><span class="cmdline" id="cmdLine" aria-live="polite"></span></div>
-<div id="modeBar" hidden><span id="modeText"></span><span class="row" style="flex-wrap:nowrap"><select id="arrStyle" hidden aria-label="แบบหัวลูกศร" data-tip="แบบหัวลูกศรที่จะเขียน"><option value="1">▶ หัวทึบ</option><option value="2">＞ หัวเส้น</option><option value="3">▷ หัวโปร่ง</option><option value="4">➤ หัวเรียว</option><option value="5">◀▶ สองทาง</option><option value="6">● หัวจุดกลม</option></select><span id="orthoSeg" hidden role="group" aria-label="แนวบังคับ (F8)"><button type="button" data-o="free" aria-label="อิสระ" data-tip="อิสระ · ลากได้ทุกทิศ">✣</button><button type="button" data-o="hv" aria-label="แนวนอน/แนวตั้ง" data-tip="แนวนอน/แนวตั้ง (F8)">┼</button><button type="button" data-o="45" aria-label="ทุก 45 องศา" data-tip="ทุก 45°">✳</button></span><button id="modeUndo" hidden>ย้อนหมุด</button><button id="modeCancel">เสร็จสิ้น</button></span></div><div id="kpBar" hidden><span id="kpBarText"></span><button id="kpBarDone">เสร็จสิ้น</button></div><div id="bgBar" hidden><span id="bgBarText"></span><button id="bgBarDone">เสร็จสิ้น</button></div></div>
+<div id="cmdDock"><div id="cmdBar" role="toolbar" aria-label="คำสั่งเขียนแบบ"><button type="button" data-cmd="select" data-tip="เลือก ย้าย แก้ไข วัตถุบนแผนที่ (กด Esc เมื่อไรก็กลับมาที่คำสั่งนี้)" aria-label="เลือก"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l10 8-4.5 1 2.6 5-2.2 1.1-2.6-5L5 16z" fill="currentColor" stroke="none"/></svg><span>เลือก</span><kbd>Esc</kbd></button><span class="sep"></span><button type="button" data-cmd="parcel" data-tip="เขียนรูปแปลง: แตะหมุดตามแนวเขต แตะหมุดแรกเพื่อปิดรูป แล้วเขียนแปลงถัดไปต่อได้เลย · เลขแปลงเพิ่มให้เอง" aria-label="แปลง"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3l6.5 4.7-2.5 7.8H6L3.5 7.7z"/><circle cx="10" cy="3" r="1.4" fill="currentColor"/><circle cx="16.5" cy="7.7" r="1.4" fill="currentColor"/><circle cx="14" cy="15.5" r="1.4" fill="currentColor"/><circle cx="6" cy="15.5" r="1.4" fill="currentColor"/><circle cx="3.5" cy="7.7" r="1.4" fill="currentColor"/></svg><span>แปลง</span><kbd>PA</kbd></button><button type="button" data-cmd="autoparcel" data-tip="แปลงอัตโนมัติ: สร้างรูปแปลงทันทีตามลำดับหมุดในไฟล์ (แยกแปลงตามคอลัมน์เลขแปลงถ้ามี) · แทนที่รูปแปลงเดิม ย้อนกลับได้" aria-label="แปลงอัตโนมัติ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.5 4l5 3.6-1.9 6H5.4L3.5 7.6z"/><path d="M15.6 1.8l-1.6 3h2.4l-1.8 3.2" stroke-width="1.4"/><circle cx="8.5" cy="4" r="1.2" fill="currentColor"/><circle cx="5.4" cy="13.6" r="1.2" fill="currentColor"/><circle cx="11.6" cy="13.6" r="1.2" fill="currentColor"/></svg><span>แปลงอัตโนมัติ</span><kbd>AP</kbd></button><button type="button" data-cmd="offset" data-tip="เส้นขนานห่าง 5 มม. บนกระดาษ (ปรับตามมาตราส่วนให้เอง): แตะเส้นขอบเขต แล้วแตะด้านที่จะให้เส้นไป · ทำต่อเนื่องได้หลายเส้น" aria-label="Offset"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 15L15 3"/><path d="M6.5 17.5L17.5 6.5" stroke-dasharray="2.6 1.8"/><path d="M11 11.5l2 2" stroke-width="1.2"/></svg><span>Offset</span><kbd>O</kbd></button><button type="button" data-cmd="leader" data-tip="เส้นยาว 5 มม. ออกจากหมุด: แตะหมุด แล้วแตะทิศที่จะให้เส้นชี้ไป · ทำต่อเนื่องได้หลายหมุด" aria-label="เส้นจากหมุด"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="14" r="2.6"/><path d="M8 12l8-8"/></svg><span>เส้นจากหมุด</span><kbd>LE</kbd></button><span class="sep"></span><button type="button" data-cmd="line" data-tip="เส้นตรง: แตะจุดเริ่มต้นและจุดปลาย · ทำต่อเนื่องได้ · ล็อกแนวนอน/แนวตั้งหรือ 45° ได้ที่แถบคำสั่งขณะเขียน (F8) · แตะเลือกเส้นเพื่อเปลี่ยนชนิดเส้น ความหนา สี" aria-label="Line"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16L16 4"/><circle cx="4" cy="16" r="1.6" fill="currentColor"/><circle cx="16" cy="4" r="1.6" fill="currentColor"/></svg><span>Line</span><kbd>L</kbd></button><button type="button" data-cmd="pline" data-tip="เส้นหลายท่อน: แตะจุดไปเรื่อย ๆ แล้วกด Enter หรือปุ่มวางเส้นเพื่อจบ" aria-label="Pline"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16l4-9 5 6 5-9"/><circle cx="3" cy="16" r="1.4" fill="currentColor"/><circle cx="7" cy="7" r="1.4" fill="currentColor"/><circle cx="12" cy="13" r="1.4" fill="currentColor"/><circle cx="17" cy="4" r="1.4" fill="currentColor"/></svg><span>Pline</span><kbd>PL</kbd></button><button type="button" data-cmd="arrow" data-tip="ลูกศรชี้: แตะจุดเริ่ม (หาง) แล้วแตะจุดที่ต้องการชี้ ระบบใส่หัวลูกศรที่จุดปลาย · ทำต่อเนื่องได้ · ใช้ชนิดเส้น/ความหนา/สีเดียวกับ Line" aria-label="ลูกศร"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 16.5L14 6"/><path d="M8.6 5h6.4v6.4" /></svg><span>ลูกศร</span><kbd>AR</kbd></button><button type="button" data-cmd="trim" data-tip="ตัดเส้น: แตะส่วนของเส้นที่จะตัดทิ้ง ระบบตัดถึงจุดตัดที่ใกล้ที่สุด" aria-label="Trim"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h14"/><path d="M12 4v12" stroke-width="1.2"/><path d="M14 7l4 6M18 7l-4 6" stroke-width="1.4"/></svg><span>Trim</span><kbd>TR</kbd></button><button type="button" data-cmd="extend" data-tip="ต่อเส้น: แตะใกล้ปลายเส้นที่จะยืด ระบบต่อไปจนชนเส้นอื่น" aria-label="Extend"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h9" /><path d="M12 10h3" stroke-dasharray="1.6 1.4"/><path d="M17 4v12" stroke-width="2"/><path d="M12 7l3 3-3 3" stroke-width="1.4"/></svg><span>Extend</span><kbd>EX</kbd></button><button type="button" data-cmd="measure" data-tip="วัดระยะ: แตะขอบแปลงด้านหนึ่ง แล้วแตะขอบแปลงอีกด้าน ระบบดูดเข้าหมุด/เส้นขอบ แสดงเส้นวัดพร้อมตัวเลขระยะ (ม.) · โหมดตั้งฉาก = วัดแนวตั้งฉากไปยังขอบที่แตะ · ทำต่อเนื่องได้ · ลบด้วยคำสั่งลบ" aria-label="วัดระยะ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5v10M17 5v10M3 10h14"/><path d="M6 8l-3 2 3 2M14 8l3 2-3 2"/></svg><span>วัดระยะ</span><kbd>DI</kbd></button><span class="sep"></span><button type="button" data-cmd="text" data-tip="แตะตำแหน่งบนแผนที่ แล้วพิมพ์ข้อความ (เลือกข้อความสำเร็จรูปได้) กด Enter เพื่อวาง · ขนาด สี ตัวหนา ตั้งได้ในหัวข้อข้อความ" aria-label="ข้อความ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5V3.5h12V5M10 3.5V16.5M7.5 16.5h5"/></svg><span>ข้อความ</span><kbd>T</kbd></button><button type="button" data-cmd="tpath" data-tip="ข้อความไหลตามแนวเส้น: แตะจุดตามแนวคลองหรือถนน แล้วกด Enter แล้วพิมพ์ข้อความ" aria-label="ตามแนวเส้น"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 15c3-6 6-7 15-8" stroke-dasharray="2 1.6"/><path d="M6 11.5l1.2-4.5M5 7.5h4.6M11 10l.6-4.4M10 6h4.4" stroke-width="1.4"/></svg><span>ตามแนวเส้น</span><kbd>TP</kbd></button><span class="sep"></span><button type="button" data-cmd="erase" data-tip="ลบ: แตะวัตถุที่จะลบทีละชิ้น ลบได้ต่อเนื่อง (เส้น ข้อความ เลขหมุด ตัวเลขระยะ แปลง หมุด) · ลบผิดกดย้อนกลับได้" aria-label="ลบ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 16.5l-4-4 8.5-8.5 5.5 5.5-7 7z"/><path d="M7.5 16.5H17"/><path d="M6 10l5 5" stroke-width="1.2"/></svg><span>ลบ</span><kbd>E</kbd></button><button type="button" data-cmd="undo" data-tip="ย้อนกลับขั้นตอนล่าสุด (Ctrl+Z)" aria-label="ย้อนกลับ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 5L3 9l4 4"/><path d="M3 9h9a5 5 0 010 10H8"/></svg><span>ย้อนกลับ</span><kbd>Ctrl+Z</kbd></button><button type="button" data-cmd="redo" data-tip="ทำซ้ำสิ่งที่ย้อนกลับไป (Ctrl+Y)" aria-label="ทำซ้ำ"><svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 5l4 4-4 4"/><path d="M17 9H8a5 5 0 000 10h4"/></svg><span>ทำซ้ำ</span><kbd>Ctrl+Y</kbd></button><span class="cmdline" id="cmdLine" aria-live="polite"></span></div>
+<div id="modeBar" hidden><span id="modeText"></span><span class="row" style="flex-wrap:nowrap"><select id="measHead" hidden aria-label="หัวเส้นวัด" data-tip="แบบหัวเส้นวัดระยะ"><option value="1">▶ หัวทึบ</option><option value="2">＞ หัวเส้น</option><option value="3">▷ หัวโปร่ง</option><option value="4">➤ หัวเรียว</option><option value="6">● จุดกลม</option><option value="7">⁄ ขีดเฉียง</option><option value="8">— ไม่มีหัว</option></select><select id="measMode" hidden aria-label="วิธีวัดระยะ" data-tip="วิธีวัดระยะ"><option value="perp">⟂ ตั้งฉากกับขอบที่แตะ</option><option value="pt">↔ จุดต่อจุด</option></select><select id="arrStyle" hidden aria-label="แบบหัวลูกศร" data-tip="แบบหัวลูกศรที่จะเขียน"><option value="1">▶ หัวทึบ</option><option value="2">＞ หัวเส้น</option><option value="3">▷ หัวโปร่ง</option><option value="4">➤ หัวเรียว</option><option value="5">◀▶ สองทาง</option><option value="6">● หัวจุดกลม</option></select><span id="orthoSeg" hidden role="group" aria-label="แนวบังคับ (F8)"><button type="button" data-o="free" aria-label="อิสระ" data-tip="อิสระ · ลากได้ทุกทิศ">✣</button><button type="button" data-o="hv" aria-label="แนวนอน/แนวตั้ง" data-tip="แนวนอน/แนวตั้ง (F8)">┼</button><button type="button" data-o="45" aria-label="ทุก 45 องศา" data-tip="ทุก 45°">✳</button></span><button id="modeUndo" hidden>ย้อนหมุด</button><button id="modeCancel">เสร็จสิ้น</button></span></div><div id="kpBar" hidden><span id="kpBarText"></span><button id="kpBarDone">เสร็จสิ้น</button></div><div id="bgBar" hidden><span id="bgBarText"></span><button id="bgBarDone">เสร็จสิ้น</button></div></div>
 </div>
   <div class="sheetwrap">
     <svg id="sheet" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600"></svg>
@@ -861,7 +862,7 @@ select{width:100%;font:inherit;font-size:.92rem;border:1px solid var(--line);bor
       <div class="acts"><button class="primary" data-x="save">บันทึก</button><button data-x="reset" id="edReset">คืนค่าเดิม</button><button data-x="cancel">ยกเลิก</button></div>
       <p class="sub">Ctrl+Enter บันทึก · Esc ยกเลิก</p>
     </div>
-    <div id="selBar" hidden role="toolbar" aria-label="วัตถุที่เลือก"><span id="selName"></span><span id="selSize" hidden><button data-s="smaller" title="ย่อ">−</button><span class="ang" id="selSizeVal"></span><button data-s="bigger" title="ขยาย">+</button><button data-s="size100">100%</button></span><span id="selDraw" hidden><select id="sdArrow" hidden aria-label="แบบหัวลูกศร" title="แบบหัวลูกศร"><option value="1">▶ หัวทึบ</option><option value="2">＞ หัวเส้น</option><option value="3">▷ หัวโปร่ง</option><option value="4">➤ หัวเรียว</option><option value="5">◀▶ สองทาง</option><option value="6">● หัวจุดกลม</option></select><select id="sdStyle" aria-label="ชนิดเส้น"><option value="solid">เส้นทึบ</option><option value="dash">เส้นประ</option><option value="dashdot">ประ-จุด</option><option value="dot">เส้นจุด</option><option value="offset">ประ offset</option></select><span class="sdgrp" title="ความหนาเส้นบนกระดาษ (มม.)"><button data-sd="w-" aria-label="บางลง">−</button><input id="sdW" inputmode="decimal" aria-label="ความหนา (มม.)"><span class="u">มม.</span><button data-sd="w+" aria-label="หนาขึ้น">+</button></span><span class="sdgrp" title="ความยาวบนพื้นดิน (ม.)"><span class="u">ยาว</span><input id="sdL" inputmode="decimal" aria-label="ความยาว (ม.)"><span class="u">ม.</span></span><span class="sdgrp" title="หมุนเส้นรอบจุดกึ่งกลาง · ช่องตัวเลข = ทิศของช่วงแรก (องศา วัดจากทิศเหนือตามเข็ม) พิมพ์ค่าใหม่ได้"><button data-sd="r+" aria-label="หมุนทวนเข็ม 5°">↺</button><input id="sdA" inputmode="decimal" aria-label="ทิศของช่วงแรก (องศา)"><span class="u">°</span><button data-sd="r-" aria-label="หมุนตามเข็ม 5°">↻</button><button data-sd="rot" id="sdRot" aria-label="ลากบนแผนที่เพื่อหมุน">⟳ หมุน</button></span><input type="color" id="sdC" aria-label="สีเส้น" title="สีเส้น"></span><button data-s="reset" id="selReset" hidden>คืนความยาว</button><button data-s="keep" id="selKeep" hidden>แปลงคง</button><button data-s="sep" id="selSep" hidden>แปลงแยก</button><button data-s="fix" id="selFix" hidden title="จัดลำดับหมุดใหม่ให้แนวเขตไม่ไขว้กัน">🔀 จัดลำดับหมุด</button><button data-s="edit" id="selEdit">แก้ไข</button><button data-s="del" class="danger">ลบ</button><button data-s="close" aria-label="ยกเลิกการเลือก">×</button></div>
+    <div id="selBar" hidden role="toolbar" aria-label="วัตถุที่เลือก"><span id="selName"></span><span id="selSize" hidden><button data-s="smaller" title="ย่อ">−</button><span class="ang" id="selSizeVal"></span><button data-s="bigger" title="ขยาย">+</button><button data-s="size100">100%</button></span><span id="selDraw" hidden><select id="sdDimHead" hidden aria-label="แบบหัวเส้นวัด" title="แบบหัวเส้นวัด"><option value="1">▶ หัวทึบ</option><option value="2">＞ หัวเส้น</option><option value="3">▷ หัวโปร่ง</option><option value="4">➤ หัวเรียว</option><option value="6">● จุดกลม</option><option value="7">⁄ ขีดเฉียง</option><option value="8">— ไม่มีหัว</option></select><select id="sdHs" hidden aria-label="ขนาดหัวลูกศร" title="ขนาดหัวลูกศร/หัวเส้นวัด บนกระดาษ"><option value="">ขนาดอัตโนมัติ</option><option value="1.5">หัว 1.5 มม.</option><option value="2">หัว 2 มม.</option><option value="2.5">หัว 2.5 มม.</option><option value="3">หัว 3 มม.</option><option value="4">หัว 4 มม.</option><option value="5">หัว 5 มม.</option></select><select id="sdArrow" hidden aria-label="แบบหัวลูกศร" title="แบบหัวลูกศร"><option value="1">▶ หัวทึบ</option><option value="2">＞ หัวเส้น</option><option value="3">▷ หัวโปร่ง</option><option value="4">➤ หัวเรียว</option><option value="5">◀▶ สองทาง</option><option value="6">● หัวจุดกลม</option></select><select id="sdStyle" aria-label="ชนิดเส้น"><option value="solid">เส้นทึบ</option><option value="dash">เส้นประ</option><option value="dashdot">ประ-จุด</option><option value="dot">เส้นจุด</option><option value="offset">ประ offset</option></select><span class="sdgrp" title="ความหนาเส้นบนกระดาษ (มม.)"><button data-sd="w-" aria-label="บางลง">−</button><input id="sdW" inputmode="decimal" aria-label="ความหนา (มม.)"><span class="u">มม.</span><button data-sd="w+" aria-label="หนาขึ้น">+</button></span><span class="sdgrp" title="ความยาวบนพื้นดิน (ม.)"><span class="u">ยาว</span><input id="sdL" inputmode="decimal" aria-label="ความยาว (ม.)"><span class="u">ม.</span></span><span class="sdgrp" title="หมุนเส้นรอบจุดกึ่งกลาง · ช่องตัวเลข = ทิศของช่วงแรก (องศา วัดจากทิศเหนือตามเข็ม) พิมพ์ค่าใหม่ได้"><button data-sd="r+" aria-label="หมุนทวนเข็ม 5°">↺</button><input id="sdA" inputmode="decimal" aria-label="ทิศของช่วงแรก (องศา)"><span class="u">°</span><button data-sd="r-" aria-label="หมุนตามเข็ม 5°">↻</button><button data-sd="rot" id="sdRot" aria-label="ลากบนแผนที่เพื่อหมุน">⟳ หมุน</button></span><input type="color" id="sdC" aria-label="สีเส้น" title="สีเส้น"></span><button data-s="reset" id="selReset" hidden>คืนความยาว</button><button data-s="keep" id="selKeep" hidden>แปลงคง</button><button data-s="sep" id="selSep" hidden>แปลงแยก</button><button data-s="fix" id="selFix" hidden title="จัดลำดับหมุดใหม่ให้แนวเขตไม่ไขว้กัน">🔀 จัดลำดับหมุด</button><button data-s="edit" id="selEdit">แก้ไข</button><button data-s="del" class="danger">ลบ</button><button data-s="close" aria-label="ยกเลิกการเลือก">×</button></div>
     <div id="tBar" hidden role="toolbar" aria-label="จัดการข้อความ">
       <button data-t="move">ย้าย</button><button data-t="rotate">หมุน</button>
       <button data-t="ccw" title="หมุนทวนเข็ม 5°">↺</button><span class="ang" id="tAng">0°</span><button data-t="cw" title="หมุนตามเข็ม 5°">↻</button>
@@ -1305,7 +1306,7 @@ function resolveOverlaps(){
     } else { clashes.push(g); Qs.forEach(Q=>placed.push({Q})); }
   });
   // grid numbers (not in groups): drop the ones that collide with anything
-  svg.querySelectorAll('text:not([data-halo])').forEach(t=>{ if (t.closest('g.drag') || t.closest('#tplForm')) return; const Q=boxQuad(t); if (placed.some(o=>overlap(Q,o.Q))){ const hp=t.previousElementSibling; if (hp && hp.hasAttribute('data-halo')) hp.remove(); t.remove(); } });
+  svg.querySelectorAll('text:not([data-halo])').forEach(t=>{ if (t.closest('g.drag') || t.closest('#tplForm') || t.dataset.l==='DIM_TEXT') return; const Q=boxQuad(t); if (placed.some(o=>overlap(Q,o.Q))){ const hp=t.previousElementSibling; if (hp && hp.hasAttribute('data-halo')) hp.remove(); t.remove(); } });
   // manual mode: outline what still overlaps so the user knows what to drag (not exported)
   clashes.forEach(g=>{ const bb=g.getBBox(), r=document.createElementNS('http://www.w3.org/2000/svg','rect');
     Object.entries({class:'sel', x:bb.x-3, y:bb.y-3, width:bb.width+6, height:bb.height+6, fill:'none', stroke:'#C8322B', 'stroke-width':1.2, 'stroke-dasharray':'3 3'}).forEach(([a,val])=>r.setAttribute(a,val));
@@ -1584,7 +1585,7 @@ function cutSegs(skipIdx){
     if (ch.closed && P.length>2) out.push([P[P.length-1],P[0]]); });
   state.leaders.forEach(ld=>{ const m=state.markers.get(ld.key); if(!m) return; const L=mm2m(ld.len);
     out.push([{e:m.e,n:m.n},{e:m.e+Math.cos(ld.ang)*L, n:m.n+Math.sin(ld.ang)*L}]); });
-  state.draws.forEach((d,i)=>{ if (i===skipIdx) return; for(let k=1;k<d.pts.length;k++) out.push([d.pts[k-1],d.pts[k]]); });
+  state.draws.forEach((d,i)=>{ if (i===skipIdx || d.dim) return; for(let k=1;k<d.pts.length;k++) out.push([d.pts[k-1],d.pts[k]]); });
   return out;
 }
 function subPoly(P, a, b){                   // part of polyline P between global params a..b
@@ -1624,6 +1625,7 @@ function chainToDraw(h){
 function nearestOnDraw(pw, tolM){            // which free line (and where along it) is under a ground point
   let best=null;
   state.draws.forEach((d,idx)=>{
+    if (d.dim) return;                         // เส้นวัดระยะ: ไม่ตัด/ต่อ
     for (let i=1;i<d.pts.length;i++){
       const a=d.pts[i-1], b=d.pts[i], dx=b.e-a.e, dy=b.n-a.n, L2=dx*dx+dy*dy||1;
       let t=((pw.e-a.e)*dx+(pw.n-a.n)*dy)/L2; t=Math.max(0,Math.min(1,t));
@@ -1638,7 +1640,7 @@ function renderDrawList(){
   const name={solid:'เส้นทึบ',dash:'เส้นประ',dashdot:'ประ-จุด',dot:'เส้นจุด',offset:'เส้นประ offset'};
   $('dList').innerHTML = state.draws.map((d,i)=>{
     let L=0; for(let k=1;k<d.pts.length;k++) L+=Math.hypot(d.pts[k].e-d.pts[k-1].e, d.pts[k].n-d.pts[k-1].n);
-    return `<li><span>${d.arrow?'ลูกศร':'เส้น'}ที่ ${i+1} · ${d.pts.length} จุด · ${fmt(L)} ม. · ${name[d.style]||''}</span><button data-dd="${i}">ลบ</button></li>`;
+    return `<li><span>${d.dim?'ระยะวัด':d.arrow?'ลูกศร':'เส้น'}ที่ ${i+1} · ${d.pts.length} จุด · ${fmt(L)} ม. · ${name[d.style]||''}</span><button data-dd="${i}">ลบ</button></li>`;
   }).join('');
 }
 function toGround(p){                        // sheet point -> ground E,N
@@ -2152,7 +2154,12 @@ const FORM_TPL = {
       // หัวแผนที่ จัดกึ่งกลาง: ชื่อแผนที่ตัวหนา 2.9 มม. · บรรทัดรองตัวปกติ 2.6–2.7 มม. · บรรทัดที่เว้นว่างไม่กินที่
       const loc=[fv('a_moo')?'หมู่ที่ '+thaiNum(fv('a_moo')):'', fv('a_tambon')?'ตำบล'+fv('a_tambon'):'', fv('a_amphoe')?'อำเภอ'+fv('a_amphoe'):'', fv('a_changwat')?'จังหวัด'+fv('a_changwat'):''].filter(Boolean).join(' ');
       const l4=[raw?'ระวาง '+raw:'', pno?'แปลงที่ '+pno:''].filter(Boolean).join('  ');
-      const hd=[[fv('a_t1'),2.9,true],[fv('a_t2'),2.7,false],[loc?'ที่ตั้งที่ดิน '+loc:'',2.6,false],[l4,2.7,false]].filter(r=>r[0]);
+      // บรรทัดเนื้อที่ (เฉพาะแบบที่กำหนด areaLine): ค่าที่กรอก หรือคำนวณจากแปลงแรก
+      let aLine='';
+      if (this.areaLine){ const A=(p0 && p0.closed!==false && p0.area) ? rnw(p0.area) : null;
+        const r=fv('dp_rai', A?A[0]:''), g=fv('dp_ngan', A?A[1]:''), w=fv('dp_wa', A?A[2].toFixed(A[3]):'');
+        if (r!=='' || g!=='' || w!=='') aLine=`เนื้อที่โดยประมาณ ${r||0} ไร่ ${g||0} งาน ${w||0} ตารางวา`; }
+      const hd=[[fv(this.t1Id||'a_t1'),2.9,true],[fv('a_t2'),2.7,false],[(loc && !this.noLoc)?'ที่ตั้งที่ดิน '+loc:'',2.6,false],[l4,2.7,false],[aLine,2.7,false]].filter(r=>r[0]);
       let hy=20.5;
       hd.forEach((r,i)=>{ f += TF(12, 198, hy, r[0], {size:r[1], bold:r[2], anchor:'middle'}); hy += i===0 ? 9.0 : 8.0; });
       if (fv('a_zone')) f += T(M.x1-0.8, 53.4, 'ZONE '+fv('a_zone'), {size:2.6, anchor:'end'});
@@ -2171,13 +2178,16 @@ const FORM_TPL = {
           f += ln(M.x0,y,M.x1,y,GL) + ln(M.x0,y,M.x0-1.2,y,TK) + ln(M.x1,y,M.x1+1.2,y,TK);
           f += T(M.x0-2.0, y, t, {size:gz, anchor:'middle', rot:-90, fill:GC}) + T(M.x1+3.9, y, t, {size:gz, anchor:'middle', rot:-90, fill:GC}); }
       }
-      // คำอธิบายสัญลักษณ์
+      // คำอธิบายสัญลักษณ์ (แบบที่กำหนด noLegend ไม่มีส่วนนี้)
+      if (!this.noLegend){
       f += T(22.0, 259.0, 'คำอธิบายสัญลักษณ์', {size:2.6, bold:true});
       f += RF(24.0, 265.4, 29.0, 268.8, {stroke:'#1F2FD8', sw:0.6, keep:true}) + T(32.0, 268.5, fv('a_lg1'), {size:2.5});
       f += RF(24.0, 271.0, 29.0, 274.4, {fill:'#F6E8A9', stroke:'#D42A20', sw:0.6, keep:true}) + T(32.0, 274.1, fv('a_lg2'), {size:2.5});
+      }
       // มาตราส่วน
-      if (o.S) f += T(107.3, 259.0, 'มาตราส่วน ๑ : '+thaiNum(fmt(o.S,0)), {size:2.7, bold:true, anchor:'middle'});
+      if (o.S) f += T(107.3, 259.0, this.scaleThin ? 'มาตราส่วน 1 : '+fmt(o.S,0) : 'มาตราส่วน ๑ : '+thaiNum(fmt(o.S,0)), {size:2.7, bold:!this.scaleThin, anchor:'middle'})   // แผนที่ระยะความลึก: ตัวบาง เลขอารบิก;
       // ตราหน่วยงาน + ผู้จัดทำ
+      if (this.noCredit) return f;                      // แบบที่ไม่มีตราและผู้จัดทำ (แผนที่ระยะความลึกแปลง)
       const lg=TPL_LOGO()||ALRO_LOGO; if (lg) f += IMG(157.5, 251.0, 19.0, 19.0, lg);
       f += T(167.0, 274.6, fv('a_by'), {size:1.9, anchor:'middle'});   // ผู้จัดทำ: size = ความสูงตัวอักษร (ตัวพิมพ์จริง ≈ 2 เท่า = 3.8 มม.) · ระยะบรรทัด 5.5 มม. ≈ 1.45 เท่าของตัวพิมพ์
       f += TF(135, 199, 280.1, fv('a_org1'), {size:1.9, anchor:'middle'});
@@ -2300,6 +2310,12 @@ const FORM_TPL = {
 };
 // แผนที่ 1 : 50,000 = แบบภาพถ่ายทางอากาศทุกประการ (ใช้ผัง ช่องกรอก และการวาดชุดเดียวกัน) ต่างกันที่ตั้งมาตราส่วน 1:50,000 ให้เมื่อเลือกแบบ
 FORM_TPL.map50k = {...FORM_TPL.aerial, name:'แผนที่ 1 : 50,000', defScale:50000};
+// แผนที่ระยะความลึกแปลง = แบบภาพถ่ายทางอากาศ (ผังและการวาดชุดเดียวกัน) · หัวแผนที่บรรทัดที่ 1 แยกช่องของตัวเอง ช่องอื่นใช้ร่วมกัน · วัดระยะความลึกด้วยคำสั่ง วัดระยะ (DI)
+FORM_TPL.depth = {...FORM_TPL.aerial, name:'แผนที่ระยะความลึกแปลง', t1Id:'dp_t1', noHalo:1, noBg:1, noCredit:1, noLoc:1, areaLine:1, noLegend:1, scaleThin:1, north:{...FORM_TPL.aerial.north, halo:0},   // พื้นขาว: ไม่ซ้อนภาพพื้นหลัง ข้อความไม่มีขอบขาว
+  fields: FORM_TPL.aerial.fields.filter(f=>!['a_logo','a_by','a_org1','a_org2','a_changwat','a_amphoe','a_tambon','a_moo','a_lg1','a_lg2'].includes(f.id) && f.g!=='คำอธิบายสัญลักษณ์และผู้จัดทำ')   // ไม่มีตรา/ผู้จัดทำ และไม่มีบรรทัดที่ตั้งที่ดิน
+    .flatMap(f=>f.id==='a_t1' ? [{...f, id:'dp_t1', v:'แผนที่แสดงการวัดระยะความลึกของแปลงที่ดิน'}]
+      : f.id==='a_parcel' ? [f, {g:'เนื้อที่โดยประมาณ · เว้นว่าง = ใช้ค่าที่คำนวณได้จากรูปแปลง'}, {id:'dp_rai', l:'ไร่', num:true}, {id:'dp_ngan', l:'งาน', num:true}, {id:'dp_wa', l:'ตารางวา', num:true}, {g:'ระบบพิกัดและกริด'}]
+      : f.g==='คำอธิบายสัญลักษณ์และผู้จัดทำ' ? [{g:'คำอธิบายสัญลักษณ์'}] : [f])};
 // ตารางประวัติแปลงของแบบ ส.ร. 22 ก: [แปลง, [ไร่,งาน,วา], หมายเหตุ] สูงสุด 9 รายการ
 function srHistRows(){
   const typed=String(tplVals.sr_hist||'').trim();
@@ -2623,14 +2639,17 @@ function setMode(m){
   state.offMode=m; if(!m) state.selEdge=null;
   if (m && m!==4) state.selMarker=null;          // เริ่มเครื่องมือใด ๆ ให้ปิดกล่องค่าพิกัดหมุด ไม่ให้บังแผนที่ (ยกเว้นเส้นจากหมุดที่ต้องใช้หมุดนั้น)
   $('modeBar').hidden = !m;
-  $('modeUndo').hidden = !(m===5 || m===6 || m===7);
+  $('modeUndo').hidden = !(m===5 || m===6 || m===7 || m===13);
   { const os=$('orthoSeg'); if (os){ os.hidden = m!==7; orthoSegSync(); } }
   { const as=$('arrStyle'); if (as){ as.hidden = !(m===7 && state.dArrow); as.value=String(ARROW_DEF||1); } }
+  { const ms=$('measMode'); if (ms){ ms.hidden = m!==13; ms.value = MEAS_PERP ? 'perp' : 'pt'; } }
+  { const mh=$('measHead'); if (mh){ mh.hidden = m!==13; mh.value = String(MEAS_HEAD||1); } }
   if (m!==5) state.draw.keys = [];
   if (m!==6) state.pathPts = [];
-  if (m!==7) state.dPts = [];
+  if (m!==7 && m!==13) state.dPts = [];
   $('modeText').textContent = m===9 ? 'แตะใกล้ปลายเส้นที่จะต่อ (Extend) ไปชนเส้นอื่น'
     : m===8 ? 'แตะส่วนของเส้นหรือเส้นประ offset ที่จะตัดออก (Trim) ระบบตัดถึงจุดตัดที่ใกล้ที่สุด'
+    : m===13 ? measText()
     : m===7 ? ((state.dPoly ? `เส้นหลายท่อน: แตะจุดต่อไป (${state.dPts.length} จุด) แล้วกด “วางเส้น”` : state.dArrow ? 'ลูกศร: แตะจุดเริ่ม (หาง) แล้วแตะจุดที่ต้องการชี้ (หัวลูกศร)' : 'เส้นตรง: แตะจุดเริ่มต้นและจุดปลาย') + orthoTag())
     : m===10 ? 'แตะตำแหน่งบนแผนที่ที่จะวาง “ข้อความที่กำหนด”'
     : m===12 ? 'ลบ: แตะวัตถุที่จะลบทีละชิ้น · ลบผิดกดย้อนกลับ (Ctrl+Z)' : m===11 ? 'เส้นจากหมุด: แตะหมุด'
@@ -2726,7 +2745,7 @@ function render(){
   let W, H, s, F, FB;
   const hint = $('scaleHint');
   const tplD = tplDef();
-  LBL_HALO = (tplD && tplD.clean) ? 1 : 0;   // แบบที่วาดบนภาพถ่าย: ตัวอักษรบนแผนที่มีขอบขาว
+  LBL_HALO = (tplD && tplD.clean && !tplD.noHalo) ? 1 : 0;   // แบบที่วาดบนภาพถ่าย: ตัวอักษรบนแผนที่มีขอบขาว
   const MK = (tplD && tplD.clean) ? [] : all;          // แบบแผนที่ภาพถ่าย: ไม่แสดงหมุดและเลขหมุด
   const SCALE_SERIES=[100,200,250,500,750,1000,1250,1500,2000,2500,3000,4000,5000,6000,8000,10000,12500,15000,16000,20000,25000,40000,50000,100000];
   if (tplD){
@@ -2993,7 +3012,9 @@ function render(){
   }
 
   // free-hand lines (drawn with the line / polyline tools)
+  DIM_LBL='';
   state.draws.forEach((d,i)=>{
+    if (d.dim){ g += dimSvg(d, i, X, Y, U, fsD); return; }      // เส้นวัดระยะ
     let dd = d.pts.map((q,k)=>`${k?'L':'M'}${X(q.e).toFixed(2)} ${Y(q.n).toFixed(2)}`).join(' ');
     const ah = d.arrow ? arrowSvg(d, X, Y, U) : null;      // ลูกศร: หัวลูกศรตามแบบที่เลือก เส้นหยุดที่โคนหัว
     if (ah && ah.end){ const P=d.pts.map(q=>[X(q.e),Y(q.n)]); P[P.length-1]=ah.end.trim; if (ah.beg) P[0]=ah.beg.trim;
@@ -3002,10 +3023,7 @@ function render(){
     const da = dashFit(DASH_MM[d.style], Lu, U);
     const isOff = d.style==='offset';
     g += `<path data-l="${isOff?'OFFSET':'DRAW'}" data-di="${i}" d="${dd}" fill="none" stroke="${d.c||'#1B1B1B'}" stroke-width="${(d.w*U).toFixed(2)}" stroke-linejoin="${isOff?'miter':'round'}" stroke-miterlimit="6" stroke-linecap="${isOff?'butt':'round'}" stroke-dasharray="${da}"/>`;
-    if (ah && ah.end){ const col=d.c||'#1B1B1B';
-      [ah.end, ah.beg].filter(Boolean).forEach(A=>A.polys.forEach(pp=>{ const pd='M'+pp.pts.map(q=>`${q[0].toFixed(2)} ${q[1].toFixed(2)}`).join('L')+(pp.closed?'Z':'');
-        const sw = pp.fill==='solid' ? Math.min(+d.w||0.21,0.2) : Math.max(+d.w||0.21, 0.18);
-        g += `<path data-l="DRAW" data-di="${i}" d="${pd}" fill="${pp.fill==='solid'?col:pp.fill==='white'?'#ffffff':'none'}" stroke="${col}" stroke-width="${(sw*U).toFixed(2)}" stroke-linejoin="${pp.fill==='none'?'round':'miter'}" stroke-linecap="round"/>`; })); }
+    if (ah && ah.end){ const col=d.c||'#1B1B1B'; [ah.end, ah.beg].forEach(A=>{ g += headSvg(A, col, +d.w||0.21, U, `data-l="DRAW" data-di="${i}"`); }); }
     if (state.selItem==='draw:'+i && state.drawRot){ const c=drawCenter(d); g += `<circle class="sel" cx="${X(c.e).toFixed(2)}" cy="${Y(c.n).toFixed(2)}" r="4" fill="#1F4E8C"/>`; }
     if (state.selItem==='draw:'+i) g += `<path class="sel" data-di="${i}" style="cursor:${state.drawRot?'grab':'move'}" d="${dd}" fill="none" stroke="#1F4E8C" stroke-width="7" stroke-opacity="0.45" stroke-linecap="round"/>`;
   });
@@ -3191,6 +3209,7 @@ function render(){
     g += dragGroup('t:'+t.id, inner);
   });
 
+  g += DIM_LBL; DIM_LBL='';               // ตัวเลขระยะของเส้นวัด: อยู่บนสุด เหนือเส้นแปลงและเส้นอื่น
   // north arrow (tap to select, drag to move) - style chosen in the panel, default = style 1
   if (o.north){
     const nk=nK, nx=nAx, ny=nAy;
@@ -3221,7 +3240,7 @@ function render(){
     if (ty==='parcel'){ const p=state.parcels[+ix]; if (p && p.closed)
       g += `<path class="sel" d="${p.pts.map((q,i)=>`${i?'L':'M'}${X(q.e).toFixed(2)} ${Y(q.n).toFixed(2)}`).join(' ')} Z" fill="#1F4E8C" fill-opacity="0.12" stroke="#1F4E8C" stroke-width="4" stroke-opacity="0.6"/>`; }
   }
-  if (state.offMode===7 && state.dPts.length){
+  if ((state.offMode===7 || state.offMode===13) && state.dPts.length){
     const P = state.dPts.map(q=>[X(q.e), Y(q.n)]);
     if (P.length>1) g += `<path class="sel" d="${P.map((q,i)=>`${i?'L':'M'}${q[0].toFixed(2)} ${q[1].toFixed(2)}`).join(' ')}" fill="none" stroke="#1F4E8C" stroke-width="2.5"/>`;
     P.forEach(q=>{ g += `<circle class="sel" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="4" fill="#1F4E8C"/>`; });
@@ -3379,6 +3398,16 @@ svg.addEventListener('pointerdown', ev=>{
   gEl.setPointerCapture(ev.pointerId); ev.preventDefault();
 });
 svg.addEventListener('pointermove', ev=>{
+  if (!drag && state.offMode===13 && state.view){            // วัดระยะ: เส้นตัวอย่างจากจุดแรกไปจุดที่จะได้จริง (ดูด/ตั้งฉาก) พร้อมระยะ
+    const q0=state.dPts[0]; let ln=svg.querySelector('#measPrev'), tx=svg.querySelector('#measPrevT');
+    if (!q0){ if (ln) ln.remove(); if (tx) tx.remove(); return; }
+    const v=state.view, X=e=>v.ox+(e-v.minX)*v.s, Y=n=>v.H-v.oy-(n-v.minY)*v.s, q=measSecond(toGround(toSvg(ev)));
+    if (!ln){ ln=document.createElementNS('http://www.w3.org/2000/svg','line'); ln.id='measPrev'; ln.setAttribute('class','sel'); ln.setAttribute('stroke','#C8322B'); ln.setAttribute('stroke-width','2'); ln.setAttribute('stroke-dasharray','6 4'); svg.appendChild(ln); }
+    if (!tx){ tx=document.createElementNS('http://www.w3.org/2000/svg','text'); tx.id='measPrevT'; tx.setAttribute('class','sel'); tx.setAttribute('fill','#C8322B'); tx.setAttribute('font-size','15'); tx.setAttribute('font-weight','600'); tx.setAttribute('font-family', FONT); svg.appendChild(tx); }
+    ln.setAttribute('x1', X(q0.e)); ln.setAttribute('y1', Y(q0.n)); ln.setAttribute('x2', X(q.e)); ln.setAttribute('y2', Y(q.n));
+    tx.setAttribute('x', X(q.e)+10); tx.setAttribute('y', Y(q.n)-10); tx.textContent = fmt(Math.hypot(q.e-q0.e, q.n-q0.n))+' ม.';
+    return;
+  }
   if (!drag && state.offMode===7 && state.view){
     const n=state.dPts.length, q0=n&&state.dPts[n-1];
     let ln=svg.querySelector('#drawPrev2');
@@ -3551,6 +3580,9 @@ svg.addEventListener('click', ev=>{
     toast('วางข้อความที่กำหนดแล้ว · ลากเพื่อย้าย หรือแตะเพื่อแก้ไข/ลบ');
     return;
   }
+  if (state.offMode===13){                     // วัดระยะ: จุดที่ 1 แล้วจุดที่ 2 (ดูดเข้าหมุด/ขอบแปลง)
+    measClick(toGround(p)); return;
+  }
   if (state.offMode===7){                      // line / polyline
     const q = drawPt(p); state.dPts.push(q);
     // (ข้อความโหมดอัปเดตด้านล่าง)
@@ -3694,10 +3726,80 @@ $('tPreset').addEventListener('change', ()=>{
   // "...หมายเลข" needs a number typed after it: put the cursor at the end
   if (/หมายเลข$/.test(v)){ ta.value=v+' '; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
 });
+// ---------- เครื่องมือวัดระยะระหว่างขอบแปลง (DI) ----------
+// เส้นวัดเก็บใน state.draws เป็น {pts:[a,b], dim:1} · ย้าย หมุน ลบ ย้อนกลับ บันทึกไฟล์งาน ได้เหมือนเส้นอื่น
+let MEAS_PERP=true, MEAS_HEAD=1, MEAS_HS=''; try{ MEAS_PERP = localStorage.getItem('parcel.measPerp')!=='0'; MEAS_HEAD=+localStorage.getItem('parcel.measHead')||1; MEAS_HS=localStorage.getItem('parcel.measHs')||''; }catch(e){}
+function measSetDef(h, hs){ if (h!=null) MEAS_HEAD=+h||1; if (hs!=null) MEAS_HS=String(hs); try{ localStorage.setItem('parcel.measHead', String(MEAS_HEAD)); localStorage.setItem('parcel.measHs', MEAS_HS); }catch(e){} }
+function measText(){ return state.dPts.length ? `วัดระยะ: แตะขอบแปลงอีกด้าน${MEAS_PERP?' (วัดตั้งฉากกับขอบที่แตะ)':''} · ย้อนหมุด = เริ่มจุดแรกใหม่` : 'วัดระยะ: แตะขอบแปลงด้านแรก (ดูดเข้าหมุดหรือเส้นขอบ)'; }
+function measEdges(){ const out=[]; (state.parcels||[]).forEach(p=>{ const P=p.pts||[], n=P.length; for (let i=0;i<n-(p.closed?0:1);i++) out.push([P[i], P[(i+1)%n]]); }); return out; }
+function footOnSeg(q,a,b){ const dx=b.e-a.e, dy=b.n-a.n, L2=dx*dx+dy*dy; const t=L2 ? Math.max(0, Math.min(1, ((q.e-a.e)*dx+(q.n-a.n)*dy)/L2)) : 0; return {e:a.e+t*dx, n:a.n+t*dy}; }
+// ดูดจุด: หมุดใกล้สุดก่อน แล้วจึงเส้นขอบแปลงใกล้สุด · คืน {pt, edge}
+function measSnap(g){
+  const tol=snapTol(); let best=null, bd=tol;
+  state.markers.forEach(m=>{ const d=Math.hypot(m.e-g.e, m.n-g.n); if (d<bd){ bd=d; best={e:m.e, n:m.n}; } });
+  if (best) return {pt:best, edge:null};
+  let be=null; bd=tol*1.6;
+  measEdges().forEach(([a,b])=>{ const f=footOnSeg(g,a,b), d=Math.hypot(f.e-g.e, f.n-g.n); if (d<bd){ bd=d; best=f; be=[a,b]; } });
+  return best ? {pt:best, edge:be} : {pt:{e:g.e, n:g.n}, edge:null};
+}
+// จุดที่ 2: โหมดตั้งฉาก = เท้าตั้งฉากจากจุดแรกลงบนขอบที่แตะ (อยู่ในช่วงด้าน) · ไม่อยู่บนขอบ = จุดที่ดูดได้
+function measSecond(g){
+  const s=measSnap(g), q0=state.dPts[0];
+  if (MEAS_PERP && q0 && s.edge) return footOnSeg(q0, s.edge[0], s.edge[1]);
+  if (MEAS_PERP && q0 && !s.edge){                      // แตะที่หมุด: ใช้ขอบที่ผ่านหมุดนั้นและใกล้แนวที่แตะที่สุด
+    let best=null, bd=Infinity; measEdges().forEach(([a,b])=>{ if (Math.hypot(a.e-s.pt.e,a.n-s.pt.n)>1e-6 && Math.hypot(b.e-s.pt.e,b.n-s.pt.n)>1e-6) return;
+      const f=footOnSeg(q0,a,b), d=Math.hypot(f.e-g.e, f.n-g.n); if (d<bd){ bd=d; best=f; } });
+    if (best) return best;
+  }
+  return s.pt;
+}
+function measClick(g){
+  if (!state.dPts.length){ state.dPts=[measSnap(g).pt]; render(); $('modeText').textContent=measText(); return; }
+  const a=state.dPts[0], b=measSecond(g), L=Math.hypot(b.e-a.e, b.n-a.n);
+  if (L<0.001){ toast('จุดที่สองซ้ำกับจุดแรก'); return; }
+  const r=v=>Math.round(v*1e4)/1e4;
+  state.draws.push({id:state.drawSeq++, pts:[{e:r(a.e), n:r(a.n)}, {e:r(b.e), n:r(b.n)}], style:'solid', w:0.18, dim:1, dh:MEAS_HEAD||1, ...(+MEAS_HS>0 ? {hs:+MEAS_HS} : {})});
+  state.dPts=[]; renderDrawList(); render(); $('modeText').textContent=measText();
+  toast(`ระยะ ${fmt(L)} ม. · แตะเพื่อวัดต่อ หรือ Esc = จบ`);
+}
+// วาดเส้นวัด: เส้นบาง หัวลูกศรสองปลาย ตัวเลขระยะกลางเส้น วางขนานเส้น
+let DIM_LBL='';
+function dimSvg(d, i, X, Y, U, fsD){
+  const [a,b]=d.pts; if (!a || !b) return '';
+  const x1=X(a.e), y1=Y(a.n), x2=X(b.e), y2=Y(b.n), Lp=Math.hypot(x2-x1, y2-y1); if (Lp<1e-6) return '';
+  const col=d.c||'#1B1B1B', st=+d.dh||1, hl=Math.min((+d.hs>0 ? +d.hs : 2.2)*U, Lp*0.3), w=(+d.w||0.18)*U;
+  const A=arrowParts(x2,y2,x1,y1,hl,st), B=arrowParts(x1,y1,x2,y2,hl,st);
+  const sx=A?A.trim[0]:x1, sy=A?A.trim[1]:y1, ex=B?B.trim[0]:x2, ey=B?B.trim[1]:y2;
+  let g='';
+  if (LBL_HALO){                                        // แบบที่วาดบนภาพถ่าย: เส้นขาวรองใต้เส้นวัดและหัว ให้เห็นชัดบนพื้นเข้ม
+    const cw=((+d.w||0.18)+0.5)*U;
+    g += `<path data-halo="1" d="M${x1.toFixed(2)} ${y1.toFixed(2)} L${x2.toFixed(2)} ${y2.toFixed(2)}" fill="none" stroke="#ffffff" stroke-width="${cw.toFixed(2)}" stroke-linecap="round"/>`;
+    [A,B].forEach(H=>H && H.polys.forEach(pp=>{ g += `<path data-halo="1" d="M${pp.pts.map(q=>`${q[0].toFixed(2)} ${q[1].toFixed(2)}`).join('L')}${pp.closed?'Z':''}" fill="${pp.closed?'#ffffff':'none'}" stroke="#ffffff" stroke-width="${(0.5*U).toFixed(2)}" stroke-linejoin="round" stroke-linecap="round"/>`; }));
+  }
+  g+=`<path data-l="DIM" data-di="${i}" d="M${sx.toFixed(2)} ${sy.toFixed(2)} L${ex.toFixed(2)} ${ey.toFixed(2)}" fill="none" stroke="${col}" stroke-width="${w.toFixed(2)}" stroke-linecap="round"/>`;
+  [A,B].forEach(H=>{ g += headSvg(H, col, +d.w||0.18, U, `data-l="DIM" data-di="${i}"`); });
+  let ang=Math.atan2(y2-y1, x2-x1)*180/Math.PI; if (ang>90) ang-=180; if (ang<-90) ang+=180;
+  const r=ang*Math.PI/180, nx=Math.sin(r), ny=-Math.cos(r), off=fsD*0.7, mx=(x1+x2)/2+nx*off, my=(y1+y2)/2+ny*off;
+  const L=Math.hypot(b.e-a.e, b.n-a.n);
+  DIM_LBL += label(mx, my, fmt(L)+' ม.', {size:fsD*0.85, fill:col, rot:ang}).replace(/<text /g, '<text data-l="DIM_TEXT" ');   // ตัวเลขระยะวาดทีหลังสุด ไม่ให้เส้นแปลงทับ
+  if (state.selItem==='draw:'+i) g += `<path class="sel" data-di="${i}" style="cursor:${state.drawRot?'grab':'move'}" d="M${x1.toFixed(2)} ${y1.toFixed(2)} L${x2.toFixed(2)} ${y2.toFixed(2)}" fill="none" stroke="#1F4E8C" stroke-width="7" stroke-opacity="0.45" stroke-linecap="round"/>`;
+  return g;
+}
+$('measHead').addEventListener('change', e=>{ measSetDef(e.target.value, null); e.target.blur(); });
+$('measMode').addEventListener('change', e=>{ MEAS_PERP = e.target.value==='perp'; try{ localStorage.setItem('parcel.measPerp', MEAS_PERP?'1':'0'); }catch(er){} e.target.blur(); if (state.offMode===13) $('modeText').textContent=measText(); });
 // แบบหัวลูกศร (d.arrow): 1 หัวทึบ · 2 หัวเส้น · 3 หัวโปร่ง · 4 หัวเรียว · 5 สองทาง · 6 หัวจุดกลม
 const ARROW_STYLES=[[1,'▶ หัวทึบ'],[2,'＞ หัวเส้น'],[3,'▷ หัวโปร่ง'],[4,'➤ หัวเรียว'],[5,'◀▶ สองทาง'],[6,'● หัวจุดกลม']];
-let ARROW_DEF=1; try{ ARROW_DEF=+localStorage.getItem('parcel.arrowStyle')||1; }catch(e){}
+let ARROW_DEF=1, ARROW_HS=''; try{ ARROW_DEF=+localStorage.getItem('parcel.arrowStyle')||1; ARROW_HS=localStorage.getItem('parcel.arrowHs')||''; }catch(e){}
+function arrowSetHs(v){ ARROW_HS=String(v||''); try{ localStorage.setItem('parcel.arrowHs', ARROW_HS); }catch(e){} }
 function arrowSetDef(v){ ARROW_DEF=+v||1; try{ localStorage.setItem('parcel.arrowStyle', String(ARROW_DEF)); }catch(e){} }
+// วาดหัวลูกศร/หัวเส้นวัดเป็น svg ตามชนิดของแต่ละชิ้น (ทึบ / โปร่งพื้นขาว / เส้น)
+function headSvg(H, col, w, U, attrs){
+  let g=''; if (!H) return g;
+  H.polys.forEach(pp=>{ const pd='M'+pp.pts.map(q=>`${q[0].toFixed(2)} ${q[1].toFixed(2)}`).join('L')+(pp.closed?'Z':'');
+    const sw = pp.thick ? Math.max(w*1.8, 0.35) : pp.fill==='solid' ? Math.min(w,0.2) : Math.max(w, 0.18);
+    g += `<path ${attrs} d="${pd}" fill="${pp.fill==='solid'?col:pp.fill==='white'?'#ffffff':'none'}" stroke="${col}" stroke-width="${(sw*U).toFixed(2)}" stroke-linejoin="${pp.fill==='none'?'round':'miter'}" stroke-linecap="round"/>`; });
+  return g;
+}
 // ชิ้นส่วนหัวลูกศรที่ปลาย b (มาจากทิศ a) ยาว hl ในระบบพิกัดใดก็ได้ · คืน {polys:[{pts, closed, fill:'solid'|'none'|'white'}], trim:[x,y] = จุดที่เส้นควรหยุด}
 function arrowParts(ax, ay, bx, by, hl, st){
   const L=Math.hypot(bx-ax, by-ay); if (!(L>0)) return null;
@@ -3707,12 +3809,15 @@ function arrowParts(ax, ay, bx, by, hl, st){
     case 2: return {polys:[{pts:[at(1,hw*1.1), [bx,by], at(1,-hw*1.1)], closed:false, fill:'none'}], trim:[bx,by]};
     case 3: return {polys:[{pts:[[bx,by], at(1,hw), at(1,-hw)], closed:true, fill:'white'}], trim:at(1,0)};
     case 4: return {polys:[{pts:[[bx,by], at(1.1,hw*1.05), at(0.72,0), at(1.1,-hw*1.05)], closed:true, fill:'solid'}], trim:at(0.75,0)};
+    case 7: { const h=hl*0.45, vx=(ux+px)/Math.SQRT2, vy=(uy+py)/Math.SQRT2;          // ขีดเฉียง 45° แบบงานสถาปัตย์
+      return {polys:[{pts:[[bx-vx*h, by-vy*h], [bx+vx*h, by+vy*h]], closed:false, fill:'none', thick:1}], trim:[bx,by]}; }
+    case 8: return {polys:[], trim:[bx,by]};                                          // ไม่มีหัว
     case 6: { const r=hl*0.3, c=[], n=16; for (let i=0;i<n;i++){ const t=i/n*2*Math.PI; c.push([bx+r*Math.cos(t), by+r*Math.sin(t)]); }
       return {polys:[{pts:c, closed:true, fill:'solid'}], trim:[bx,by]}; }
     default: return {polys:[{pts:[[bx,by], at(1,hw), at(1,-hw)], closed:true, fill:'solid'}], trim:at(0.8,0)};
   }
 }
-const arrowLen = d => Math.max(3, (+d.w||0.21)*7);          // ความยาวหัวลูกศรบนกระดาษ (มม.)
+const arrowLen = d => (+d.hs>0) ? +d.hs : Math.max(3, (+d.w||0.21)*7);   // ขนาดที่ผู้ใช้เลือก หรืออัตโนมัติตามความหนาเส้น          // ความยาวหัวลูกศรบนกระดาษ (มม.)
 // หัวลูกศรของเส้น d ในหน่วย svg: ปลายทาง (และต้นทางถ้าเป็นแบบสองทาง)
 function arrowSvg(d, X, Y, U){
   const P=d.pts.map(q=>[X(q.e), Y(q.n)]), n=P.length; if (n<2 || !d.arrow) return null;
@@ -3722,7 +3827,7 @@ function arrowSvg(d, X, Y, U){
   return {end, beg};
 }
 // เส้นที่เขียนด้วย Line / Pline / ลูกศร (ลูกศร = เส้นตรง 2 จุด หัวลูกศรที่จุดปลาย)
-function newDraw(){ const d={id:state.drawSeq++, pts:state.dPts.slice(), style:$('dStyle').value, w:drawWidthMM()}; if (state.dArrow) d.arrow=ARROW_DEF||1; return d; }
+function newDraw(){ const d={id:state.drawSeq++, pts:state.dPts.slice(), style:$('dStyle').value, w:drawWidthMM()}; if (state.dArrow){ d.arrow=ARROW_DEF||1; if (+ARROW_HS>0) d.hs=+ARROW_HS; } return d; }
 function startDraw(poly, arrow){
   if (needData()) return;
   if (window.closeToolPopup) closeToolPopup();
@@ -4052,6 +4157,7 @@ renderNorthPicker();
 // manual parcel drawing
 $('drawStart').onclick = ()=>{ if (needData()) return; state.selMarker=null; state.selText=null; state.selItem=null; setMode(5); };
 $('modeUndo').onclick = ()=>{
+  if (state.offMode===13){ state.dPts=[]; render(); $('modeText').textContent=measText(); return; }
   if (state.offMode===7){ state.dPts.pop(); render(); $('modeCancel').textContent = state.dPts.length>=2 ? 'วางเส้น' : 'ยกเลิก'; return; }
   if (state.offMode===6){ state.pathPts.pop(); render(); $('modeText').textContent = pathModeText();
     $('modeCancel').textContent = state.pathPts.length>=2 ? 'วางข้อความ' : 'ยกเลิก'; return; }
@@ -4396,7 +4502,9 @@ function buildDxf(){
 
   // survey geometry straight from the coordinates (no rounding through the drawing)
   const EXACT = new Set(['PARCEL','MARKER','OFFSET','LEADER','DRAW']);
-  state.draws.forEach(d=>{ if (d.pts.length>1) poly('DRAW', d.pts.map(q=>[q.e,q.n]), false, d.style==='solid'?null:'DASHED_OFFSET');
+  state.draws.forEach(d=>{ if (d.dim && d.pts.length>1){ const [a,b]=d.pts, hl=mm2m(+d.hs>0 ? +d.hs : 2.2), st=+d.dh||1; poly('DIM', [[a.e,a.n],[b.e,b.n]], false, null);   // เส้นวัดระยะ: เส้น + หัวลูกศรสองปลาย (ตัวเลขออกในชั้น DIM_TEXT)
+      [arrowParts(a.e,a.n,b.e,b.n,hl,st), arrowParts(b.e,b.n,a.e,a.n,hl,st)].filter(Boolean).forEach(A=>A.polys.forEach(pp=>poly('DIM', pp.pts, true, null))); return; }
+    if (d.pts.length>1) poly('DRAW', d.pts.map(q=>[q.e,q.n]), false, d.style==='solid'?null:'DASHED_OFFSET');
     if (d.arrow && d.pts.length>1){ const st=+d.arrow||1, hl=mm2m(arrowLen(d)), n=d.pts.length;   // หัวลูกศรตามแบบที่เลือก
       const heads=[arrowParts(d.pts[n-2].e,d.pts[n-2].n,d.pts[n-1].e,d.pts[n-1].n, hl, st===5?1:st)];
       if (st===5) heads.push(arrowParts(d.pts[1].e,d.pts[1].n,d.pts[0].e,d.pts[0].n, hl, 1));
@@ -4760,10 +4868,10 @@ $('qTextIn').addEventListener('keydown', ev=>{
 
 // ---------- แถบคำสั่งแบบ CAD: คลิกครั้งเดียวเข้าคำสั่ง ทำต่อเนื่องได้ · คลิกซ้ำ / Esc = จบ ----------
 var CMD={active:'select', leadTool:false, buf:'', last:null};
-const CMD_ALIAS={L:'line',LINE:'line',PL:'pline',PLINE:'pline',AR:'arrow',ARROW:'arrow',O:'offset',OFFSET:'offset',TR:'trim',TRIM:'trim',EX:'extend',EXTEND:'extend',
+const CMD_ALIAS={DI:'measure',DIST:'measure',MEASURE:'measure',L:'line',LINE:'line',PL:'pline',PLINE:'pline',AR:'arrow',ARROW:'arrow',O:'offset',OFFSET:'offset',TR:'trim',TRIM:'trim',EX:'extend',EXTEND:'extend',
   E:'erase',ERASE:'erase',DEL:'erase',T:'text',DT:'text',TEXT:'text',TP:'tpath',LE:'leader',LEADER:'leader',PA:'parcel',AP:'autoparcel',AUTO:'autoparcel',PARCEL:'parcel',
   U:'undo',UNDO:'undo',REDO:'redo',ESC:'select'};
-const CMD_NAME={select:'SELECT',parcel:'PARCEL',autoparcel:'AUTO PARCEL',offset:'OFFSET',leader:'LEADER',line:'LINE',pline:'PLINE',arrow:'ARROW',trim:'TRIM',extend:'EXTEND',text:'TEXT',tpath:'TEXT PATH',erase:'ERASE'};
+const CMD_NAME={select:'SELECT',parcel:'PARCEL',autoparcel:'AUTO PARCEL',offset:'OFFSET',leader:'LEADER',line:'LINE',pline:'PLINE',arrow:'ARROW',measure:'MEASURE',trim:'TRIM',extend:'EXTEND',text:'TEXT',tpath:'TEXT PATH',erase:'ERASE'};
 function ensureManualParcels(){
   if (!$('autoParcel').checked) return;
   // แปลงที่สร้างอัตโนมัติจากไฟล์ กลายเป็นแปลงที่เขียนเอง (ไม่หาย) แล้วเขียนเพิ่มต่อได้
@@ -4792,6 +4900,7 @@ function runCmd(name){
     case 'line':  startDraw(false); break;
     case 'pline': startDraw(true); break;
     case 'arrow': startDraw(false, true); break;
+    case 'measure': state.dPts=[]; setMode(13); $('modeCancel').textContent='เสร็จสิ้น'; break;
     case 'trim': case 'extend':
       if (!state.draws.length){ toast('ยังไม่มีเส้นที่เขียนเอง ใช้ Line หรือ Pline ก่อน'); setMode(0); return; }
       setMode(name==='trim'?8:9); break;
@@ -4804,14 +4913,14 @@ function cmdSync(){
   if (!CMD || !HIST) return;
   const m=state.offMode;
   const a = m===1||m===2 ? 'offset' : m===3 ? 'text' : m===4 ? (CMD.leadTool?'leader':'select') : m===5 ? 'parcel' : m===6 ? 'tpath'
-          : m===7 ? (state.dArrow?'arrow':state.dPoly?'pline':'line') : m===8 ? 'trim' : m===9 ? 'extend' : m===11 ? 'leader' : m===12 ? 'erase' : 'select';
+          : m===7 ? (state.dArrow?'arrow':state.dPoly?'pline':'line') : m===8 ? 'trim' : m===9 ? 'extend' : m===11 ? 'leader' : m===12 ? 'erase' : m===13 ? 'measure' : 'select';
   CMD.active=a;
   document.querySelectorAll('#cmdBar button[data-cmd]').forEach(b=>{ const on=b.dataset.cmd===a; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
   const u=document.querySelector('#cmdBar [data-cmd=undo]'), r=document.querySelector('#cmdBar [data-cmd=redo]');
   if (u) u.disabled=!HIST.undo.length && !window.LAST_OPEN && !(window.LAST_CLEAR && (!state.rows || !state.rows.length)); if (r) r.disabled=!HIST.redo.length;
   const line=$('cmdLine'); if (!line) return;
   line.innerHTML = CMD.buf ? `คำสั่ง: <b>${esc(CMD.buf)}</b>_ <span style="opacity:.6">(Enter)</span>`
-    : a==='select' ? 'คำสั่ง: พิมพ์ L · PL · AR · O · TR · EX · T · E แล้ว Enter' : `คำสั่ง: <b>${CMD_NAME[a]}</b> · Esc = จบ`;
+    : a==='select' ? 'คำสั่ง: พิมพ์ L · PL · AR · DI · O · TR · EX · T · E แล้ว Enter' : `คำสั่ง: <b>${CMD_NAME[a]}</b> · Esc = จบ`;
 }
 $('cmdBar').addEventListener('click', ev=>{ const b=ev.target.closest('button[data-cmd]'); if (b && !b.disabled) runCmd(b.dataset.cmd); });
 // ปุ่มเดิมในแผงยังเรียกคำสั่งเดียวกันได้
@@ -5285,6 +5394,7 @@ function bgInv(A, E, N){
 function bgFwd(A, u, v){ const [a,b,c,d,e,f]=A; return {e:a*u+b*v+c, n:d*u+e*v+f}; }
 // เรียกจาก render(): วาดภาพไว้ใต้ทุกอย่าง ตัดให้อยู่ในกรอบรูปแผนที่
 function bgSvg(){
+  { const tD=(typeof tplDef==='function') && tplDef(); if (tD && tD.noBg) return ''; }   // แบบที่ไม่ซ้อนภาพพื้นหลัง (แผนที่ระยะความลึกแปลง)
   const B=state.bg, v=state.view, fr=state.frame, A=bgAff();
   if (!BG_IMG || !B || !A || !B.show || !v || !fr) return '';
   const [a,b,c,d,e,f]=A, s=v.s;
@@ -5834,6 +5944,8 @@ function sdSync(){
   const d=sdSel(), box=$('selDraw'); box.hidden=!d; if (!d) return;
   const set=(id,v)=>{ const el=$(id); if (document.activeElement!==el) el.value=v; };
   $('sdArrow').hidden=!d.arrow; if (d.arrow) set('sdArrow', String(+d.arrow||1));
+  $('sdDimHead').hidden=!d.dim; if (d.dim) set('sdDimHead', String(+d.dh||1));
+  $('sdHs').hidden=!(d.arrow||d.dim); if (d.arrow||d.dim) set('sdHs', +d.hs>0 ? String(+d.hs) : '');
   set('sdStyle', d.style||'solid'); set('sdW', (+d.w||0.25).toFixed(2).replace(/0$/,''));
   set('sdL', sdLen(d).toFixed(3)); set('sdC', d.c||'#1b1b1b'); set('sdA', fmt(sdAz(d),1));
   if (state.drawRotSel!==state.selItem) state.drawRot=false;
@@ -5849,6 +5961,8 @@ function drawRotate(d, deg){ const c=drawCenter(d), r=deg*Math.PI/180, cs=Math.c
 function sdApply(fn){ const d=sdSel(); if (!d) return; fn(d);
   if (d.style!=='offset'){ $('dStyle').value=d.style; $('dWidth').value=d.w; }   // เส้นที่เขียนถัดไปใช้ชนิดและความหนาล่าสุด
   renderDrawList(); render(); }
+$('sdDimHead').addEventListener('change', e=>sdApply(d=>{ if (!d.dim) return; d.dh=+e.target.value||1; measSetDef(d.dh, null); }));
+$('sdHs').addEventListener('change', e=>sdApply(d=>{ const v=parseFloat(e.target.value); if (v>0) d.hs=v; else delete d.hs; if (d.dim) measSetDef(null, v>0?v:''); else if (d.arrow) arrowSetHs(v>0?v:''); }));
 $('sdArrow').addEventListener('change', e=>sdApply(d=>{ d.arrow=+e.target.value||1; arrowSetDef(d.arrow); }));   // แก้แบบหัวลูกศรที่เลือก (และใช้กับลูกศรถัดไป)
 $('arrStyle').addEventListener('change', e=>{ arrowSetDef(e.target.value); e.target.blur(); });
 $('sdStyle').addEventListener('change', e=>sdApply(d=>{ d.style=e.target.value; if (d.style==='offset' && !(+d.w>0)) d.w=0.21; }));
