@@ -757,6 +757,7 @@ select{width:100%;font:inherit;font-size:.92rem;border:1px solid var(--line);bor
     <div class="checks">
       <label><input type="checkbox" id="showGrid">กริดพิกัด</label>
       <label><input type="checkbox" id="showCorner">พิกัด 4 มุม (+)</label>
+      <label title="ติกออก = แสดงเฉพาะตัวเลขพิกัดและขีดที่ขอบกรอบ ไม่มีเส้นกริดพาดในแผนที่"><input type="checkbox" id="showGridLines" checked>แสดงเส้นกริด</label>
     </div>
     <h3 class="sub-h">รูปแปลง</h3>
     <div class="checks">
@@ -1105,7 +1106,7 @@ function opt(){
   return {
     fs: +$('fontSize').value, r: 2,          // หมุดหลักเขตคงที่ 2 มม. ตามมาตรฐาน (ปรับไม่ได้)
     dist: $('showDist').checked, area: $('showArea').checked, north: $('showNorth').checked,
-    scale: $('showScale').checked, grid: $('showGrid').checked, fill: $('showFill').checked, corner: $('showCorner').checked,
+    scale: $('showScale').checked, grid: $('showGrid').checked, gridLines: $('showGridLines').checked, fill: $('showFill').checked, corner: $('showCorner').checked,
     parcelNo: $('parcelNo').value.trim(), text: $('customText').value,
     S: +$('scaleSel').value, paper: $('pdfSize').value, orient: $('orient').value
   };
@@ -2172,10 +2173,10 @@ const FORM_TPL = {
         const ln=(x1,y1,x2,y2,st)=>`<line data-l="GRID" x1="${(x1*h.SX*U).toFixed(2)}" y1="${(y1*h.SY*U).toFixed(2)}" x2="${(x2*h.SX*U).toFixed(2)}" y2="${(y2*h.SY*U).toFixed(2)}" ${st}/>`;
         const GL='stroke="#9DB5A8" stroke-width="1" stroke-dasharray="4 4"', TK=`stroke="${B}" stroke-width="${(0.25*U).toFixed(2)}"`, GC='#4E6B5C', gz=2.0;
         for (let e=Math.ceil(e0/step)*step; e<=e1; e+=step){ const x=X(e); if (x<M.x0+4 || x>M.x1-4) continue; const t='E '+fmt(e,0);
-          f += ln(x,M.y0,x,M.y1,GL) + ln(x,M.y0,x,M.y0-1.2,TK) + ln(x,M.y1,x,M.y1+1.2,TK);
+          f += (o.gridLines!==false ? ln(x,M.y0,x,M.y1,GL) : '') + ln(x,M.y0,x,M.y0-1.2,TK) + ln(x,M.y1,x,M.y1+1.2,TK);
           f += T(x, M.y0-2.0, t, {size:gz, anchor:'middle', fill:GC}) + T(x, M.y1+3.9, t, {size:gz, anchor:'middle', fill:GC}); }
         for (let n=Math.ceil(n0/step)*step; n<=n1; n+=step){ const y=Y(n); if (y<M.y0+4 || y>M.y1-4) continue; const t='N '+fmt(n,0);
-          f += ln(M.x0,y,M.x1,y,GL) + ln(M.x0,y,M.x0-1.2,y,TK) + ln(M.x1,y,M.x1+1.2,y,TK);
+          f += (o.gridLines!==false ? ln(M.x0,y,M.x1,y,GL) : '') + ln(M.x0,y,M.x0-1.2,y,TK) + ln(M.x1,y,M.x1+1.2,y,TK);
           f += T(M.x0-2.0, y, t, {size:gz, anchor:'middle', rot:-90, fill:GC}) + T(M.x1+3.9, y, t, {size:gz, anchor:'middle', rot:-90, fill:GC}); }
       }
       // คำอธิบาย (แผนที่ระยะความลึกแปลง): หัวข้อขีดเส้นใต้ · ที่ดินติด… · ระยะความลึกจากเส้นวัดระยะล่าสุด (หรือค่าที่กรอก)
@@ -2880,10 +2881,14 @@ function render(){
   if (GM){                                    // กริดของแบบ: เส้นทึบสีน้ำเงินทุกช่วงกริด · ค่า E เหนือกรอบ · ค่า N ขวากรอบ (หมุนตั้ง)
     const C='#2F55C4', fsz=(2.0/THAI_INK)*U, n=Math.round(GM.Ew/GM.g), m=Math.round(GM.Nh/GM.g);
     for (let i=0;i<=n;i++){ const e=GM.E0+i*GM.g, x=X(e);
-      g+=`<line x1="${x.toFixed(2)}" y1="${GM.wy0.toFixed(2)}" x2="${x.toFixed(2)}" y2="${GM.wy1.toFixed(2)}" stroke="${C}" stroke-width="1" data-l="GRID" data-keepc="1"/>`;
+      const full = o.gridLines!==false || i===0 || i===n, tk=1.5*U;   // ปิดเส้นกริด: เหลือขอบกรอบ และขีดสั้นที่ขอบ
+      g+= full ? `<line x1="${x.toFixed(2)}" y1="${GM.wy0.toFixed(2)}" x2="${x.toFixed(2)}" y2="${GM.wy1.toFixed(2)}" stroke="${C}" stroke-width="1" data-l="GRID" data-keepc="1"/>`
+        : `<line x1="${x.toFixed(2)}" y1="${GM.wy0.toFixed(2)}" x2="${x.toFixed(2)}" y2="${(GM.wy0+tk).toFixed(2)}" stroke="${C}" stroke-width="1" data-l="GRID" data-keepc="1"/><line x1="${x.toFixed(2)}" y1="${(GM.wy1-tk).toFixed(2)}" x2="${x.toFixed(2)}" y2="${GM.wy1.toFixed(2)}" stroke="${C}" stroke-width="1" data-l="GRID" data-keepc="1"/>`;
       g+=`<text x="${x.toFixed(2)}" y="${(GM.wy0-2.4*U).toFixed(2)}" font-family="${FONT}" font-size="${fsz.toFixed(2)}" fill="${C}" text-anchor="middle" data-l="GRID_TEXT" data-keepc="1">${fmt(e,0)}</text>`; }
     for (let j=0;j<=m;j++){ const nn=GM.N0+j*GM.g, y=Y(nn), xt=GM.wx1+1.8*U;
-      g+=`<line x1="${GM.wx0.toFixed(2)}" y1="${y.toFixed(2)}" x2="${GM.wx1.toFixed(2)}" y2="${y.toFixed(2)}" stroke="${C}" stroke-width="1" data-l="GRID" data-keepc="1"/>`;
+      const fullN = o.gridLines!==false || j===0 || j===m, tkN=1.5*U;
+      g+= fullN ? `<line x1="${GM.wx0.toFixed(2)}" y1="${y.toFixed(2)}" x2="${GM.wx1.toFixed(2)}" y2="${y.toFixed(2)}" stroke="${C}" stroke-width="1" data-l="GRID" data-keepc="1"/>`
+        : `<line x1="${GM.wx0.toFixed(2)}" y1="${y.toFixed(2)}" x2="${(GM.wx0+tkN).toFixed(2)}" y2="${y.toFixed(2)}" stroke="${C}" stroke-width="1" data-l="GRID" data-keepc="1"/><line x1="${(GM.wx1-tkN).toFixed(2)}" y1="${y.toFixed(2)}" x2="${GM.wx1.toFixed(2)}" y2="${y.toFixed(2)}" stroke="${C}" stroke-width="1" data-l="GRID" data-keepc="1"/>`;
       if (j<m) g+=`<text x="${xt.toFixed(2)}" y="${y.toFixed(2)}" transform="rotate(90 ${xt.toFixed(2)} ${y.toFixed(2)})" font-family="${FONT}" font-size="${fsz.toFixed(2)}" fill="${C}" text-anchor="middle" data-l="GRID_TEXT" data-keepc="1">${fmt(nn,0)}</text>`; }
   }
   if (o.grid && !GM && !(tplD && tplD.ownGrid)){
@@ -2900,10 +2905,12 @@ function render(){
     const eLines=[], nLines=[];
     for (let e=Math.ceil(e0/step)*step; e<=e1; e+=step) eLines.push(e);
     for (let n=Math.ceil(n0/step)*step; n<=n1; n+=step) nLines.push(n);
+    if (o.gridLines!==false){                    // เส้นกริดพาดในแผนที่ (ปิดได้ · ตัวเลขและขีดที่ขอบยังแสดง)
     eLines.forEach(e=>{ const x=X(e);
       g+=`<line x1="${x.toFixed(1)}" y1="${FT}" x2="${x.toFixed(1)}" y2="${H-FB}" stroke="#9DB5A8" stroke-width="1" stroke-dasharray="4 4" data-l="GRID"/>`; });
     nLines.forEach(n=>{ const y=Y(n);
       g+=`<line x1="${F}" y1="${y.toFixed(1)}" x2="${W-F}" y2="${y.toFixed(1)}" stroke="#9DB5A8" stroke-width="1" stroke-dasharray="4 4" data-l="GRID"/>`; });
+    }
     // candidate labels: E on top & bottom edges, N on left & right edges (rotated)
     const cand = [];
     // ไม่ใช้แบบฟอร์ม: ตัวเลขกริดอยู่นอกกรอบ (ในระยะขอบกระดาษ 10 มม.) พร้อมขีดสั้นที่ขอบกรอบ · แบบฟอร์ม: อยู่ในกรอบรูปแผนที่ตามเดิม
@@ -3358,7 +3365,7 @@ $('raw').addEventListener('input', rawSync); rawSync();
 $('raw').addEventListener('paste', ()=> setTimeout(()=>load($('raw').value), 0));
 $('swap').onclick = ()=>{ if(!state.rows) return; { const sw=k=>{ const [a,b,c]=k.split('|'); return `${a}|${c}|${b}`; }; state.leaders.forEach(l=>{ l.key=sw(l.key); l.ang=Math.PI/2-l.ang; }); state.manualParcels.forEach(mp=>{ mp.keys=mp.keys.map(sw); }); } renderLeadList(); state.swap=!state.swap; state.texts.forEach(t=>{ const q=t.e; t.e=t.n; t.n=q; }); state.offsets={}; state.offLines=[]; state.selMarker=null; state.coordLabels=new Set(); state.offMode=0; state.draw={keys:[]}; state.selEdge=null; $('modeBar').hidden=true; renderOffList(); build(); renderParcelList(); render(); toast(state.swap?'สลับค่า E กับ N แล้ว':'กลับเป็นลำดับเดิมแล้ว'); };
 $('resetPos').onclick = ()=>{ state.offsets={}; render(); };
-['parcelNo','customText','fontSize','markerSize','showDist','showArea','waInt','showNorth','showScale','showGrid','showFill','showCorner','showFrame','autoLayout','showGaruda','showTitle','titleText','titleMM','scaleSel','pdfSize','orient']
+['parcelNo','customText','fontSize','markerSize','showDist','showArea','waInt','showNorth','showScale','showGrid','showGridLines','showFill','showCorner','showFrame','autoLayout','showGaruda','showTitle','titleText','titleMM','scaleSel','pdfSize','orient']
   .forEach(id=>$(id).addEventListener('input', ()=>{ if(state.markers.size) render(); }));
 
 $('waInt').addEventListener('change', ()=>{ try{ renderParcelList(); renderDrawList(); }catch(e){} });   // ปัดตารางวา: ปรับรายการแปลงด้วย
