@@ -2311,7 +2311,7 @@ const FORM_TPL = {
 // แผนที่ 1 : 50,000 = แบบภาพถ่ายทางอากาศทุกประการ (ใช้ผัง ช่องกรอก และการวาดชุดเดียวกัน) ต่างกันที่ตั้งมาตราส่วน 1:50,000 ให้เมื่อเลือกแบบ
 FORM_TPL.map50k = {...FORM_TPL.aerial, name:'แผนที่ 1 : 50,000', defScale:50000};
 // แผนที่ระยะความลึกแปลง = แบบภาพถ่ายทางอากาศ (ผังและการวาดชุดเดียวกัน) · หัวแผนที่บรรทัดที่ 1 แยกช่องของตัวเอง ช่องอื่นใช้ร่วมกัน · วัดระยะความลึกด้วยคำสั่ง วัดระยะ (DI)
-FORM_TPL.depth = {...FORM_TPL.aerial, name:'แผนที่ระยะความลึกแปลง', t1Id:'dp_t1', noHalo:1, noBg:1, noCredit:1, noLoc:1, areaLine:1, noLegend:1, scaleThin:1, north:{...FORM_TPL.aerial.north, halo:0},   // พื้นขาว: ไม่ซ้อนภาพพื้นหลัง ข้อความไม่มีขอบขาว
+FORM_TPL.depth = {...FORM_TPL.aerial, name:'แผนที่ระยะความลึกแปลง', t1Id:'dp_t1', noHalo:1, noBg:1, noCredit:1, noLoc:1, areaLine:1, noLegend:1, scaleThin:1, pStroke:'#1B1B1B', pW:0.21,   // เส้นขอบแปลงสีดำ หนาเท่าเส้นแปลงของ สร.5 (1 หน่วย = 0.21 มม.) north:{...FORM_TPL.aerial.north, halo:0},   // พื้นขาว: ไม่ซ้อนภาพพื้นหลัง ข้อความไม่มีขอบขาว
   fields: FORM_TPL.aerial.fields.filter(f=>!['a_logo','a_by','a_org1','a_org2','a_changwat','a_amphoe','a_tambon','a_moo','a_lg1','a_lg2'].includes(f.id) && f.g!=='คำอธิบายสัญลักษณ์และผู้จัดทำ')   // ไม่มีตรา/ผู้จัดทำ และไม่มีบรรทัดที่ตั้งที่ดิน
     .flatMap(f=>f.id==='a_t1' ? [{...f, id:'dp_t1', v:'แผนที่แสดงการวัดระยะความลึกของแปลงที่ดิน'}]
       : f.id==='a_parcel' ? [f, {g:'เนื้อที่โดยประมาณ · เว้นว่าง = ใช้ค่าที่คำนวณได้จากรูปแปลง'}, {id:'dp_rai', l:'ไร่', num:true}, {id:'dp_ngan', l:'งาน', num:true}, {id:'dp_wa', l:'ตารางวา', num:true}, {g:'ระบบพิกัดและกริด'}]
